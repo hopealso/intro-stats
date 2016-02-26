@@ -1,0 +1,67 @@
+---
+title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 1b"
+author: "Hope Foster-Reyes"
+date: "February 26, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Prepare Environment
+
+Load libraries.
+
+```{r}
+library(xlsx)
+```
+
+
+Download data from online Url to subdirectory local to this RStudio project.
+
+```{r download-data}
+if (!file.exists("data")) {
+  dir.create("data")
+}
+
+# !!!This version of file fails. Troubleshoot. Below code worked with manually imported version of file.
+am.url <- "http://onlinestatbook.com/2/case_studies/data/angry_moods.xls"
+am.file <- "./data/angry_moods.xls"
+if (!file.exists(am.file)) {
+  download.file(am.url, destfile = am.file)
+}
+```
+
+Import data.
+
+```{r import-data}
+am.df <- read.xlsx(am.file, sheetName = "angry_moods.txt", header = TRUE)
+```
+
+## Q10.
+
+```{r q10}
+# Rice rule for number of intervals in histogram
+intervals.rice <- round(2 * nrow(am.df)^(1/3), digits = 0)
+# intervals.rice <- function(x) {
+#  return(round(2 * x^(1/3), digits = 0))
+#}
+
+hist(am.df$Control.In, breaks = intervals.rice)
+hist(am.df$Control.In)
+
+```
+
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
