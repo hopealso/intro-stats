@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 1b"
 author: "Hope Foster-Reyes"
 date: "February 26, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -36,7 +36,10 @@ if (!file.exists(am.file)) {
 Import data.
 
 ```{r import-data}
-am.df <- read.xlsx(am.file, sheetName = "angry_moods.txt", header = TRUE)
+am.df <- read.xlsx(am.file, 
+                   sheetName = "angry_moods.txt", 
+                   header = TRUE,
+                   colClasses = rep("integer", 7))
 ```
 
 ## Q10.
@@ -49,11 +52,22 @@ hist(am.df$Control.In)
 
 ```{r q11}
 ctlout.mean <- mean(am.df$Control.Out)
-ctlout.athete.mean <- mean(am.df$Control.Out)
-ctlout.nonath.mean <- 
+ctlout.athete.mean <- mean(am.df$Control.Out[am.df$Sports == 1])
+ctlout.nonath.mean <- mean(am.df$Control.Out[am.df$Sports != 1])
 ```
 
+Mean                         | Result  |
+-----------------------------|---------| 
+Overal Control-Out Mean      | `r round(ctlout.mean), 2)` |
+Athlete Control-Out Mean     | `r round(ctlout.athete.mean, 2)` |
+Non-Athlete Control-out Mean | `r round(ctlout.nonath.mean, 2)` |
 
+## Q17.
+
+list.q17 <- list(
+  Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
+  "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
+boxplot(list.q17, main = "Anger Expression Index")
 
 ## Including Plots
 
