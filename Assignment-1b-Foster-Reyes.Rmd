@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 1b"
 author: "Hope Foster-Reyes"
 date: "February 26, 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Load libraries.
 
-```{r}
+```{r libraries}
 library(xlsx)
 ```
 
@@ -45,7 +45,7 @@ am.df <- read.xlsx(am.file,
 ## Q10.
 
 ```{r q10}
-hist(am.df$Control.In)
+hist(am.df$Control.Out, main = "Control-Out Scores")
 ```
 
 ## Q11.
@@ -58,16 +58,68 @@ ctlout.nonath.mean <- mean(am.df$Control.Out[am.df$Sports != 1])
 
 Mean                         | Result  |
 -----------------------------|---------| 
-Overal Control-Out Mean      | `r round(ctlout.mean), 2)` |
+Overall Control-Out Mean     | `r round(ctlout.mean, 2)` |
 Athlete Control-Out Mean     | `r round(ctlout.athete.mean, 2)` |
 Non-Athlete Control-out Mean | `r round(ctlout.nonath.mean, 2)` |
 
 ## Q17.
 
+```{r q17}
 list.q17 <- list(
   Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
   "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
 boxplot(list.q17, main = "Anger Expression Index")
+```
+
+## Q18.
+```{r q18}
+list.q17 <- list(
+  Male = am.df$Anger_Expression[am.df$Gender == 1], 
+  Female = am.df$Anger_Expression[am.df$Gender == 2])
+boxplot(list.q17, main = "Anger Expression Index")
+```
+
+## Q20.
+
+Scatter plot to visualize correlation of Control-In and Control-Out.
+
+```{r q20-plot}
+plot(am.df$Control.In, am.df$Control.Out)
+```
+
+```{r q20-correlation}
+x <- am.df$Control.In
+y <- am.df$Control.Out
+x.bar <- mean(x)
+y.bar <- mean(y)
+
+# Calculate Pearson's correlation manually
+r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt(sum((y - y.bar)^2))))
+
+# Calculate Pearson's correlation with built-in R function
+r <- cor(x, y, method = "pearson")
+```
+
+Manual calculation of correlation between Control-In and Control-Out - `r round(r.manual, 4)`
+
+Calculation of correlation between Control-In and Control-Out using cor() - `r round(r, 4)`
+
+```{r q20-significance}
+# Calculate t-value using previously calculated correlation, r.
+t <- r * (sqrt(nrow(am.df) - 2) / sqrt(1 - r^2))
+
+# Set critical value based on t-table lookup (provided by TA).
+critical.value <- 2.374
+
+# Test for significance using t value.
+significant <- t > critical.value
+
+# Check built-in cor.test()
+cor.test(x, y, alternative = "two.sided", method = "pearson", conf.level = 0.99)
+
+```
+
+Is this correlation statistically significant at the 0.01 level? `r significant`
 
 ## Including Plots
 
