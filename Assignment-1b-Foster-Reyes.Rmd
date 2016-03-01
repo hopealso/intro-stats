@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 1b"
 author: "Hope Foster-Reyes"
 date: "February 26, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -15,6 +15,7 @@ Load libraries.
 
 ```{r libraries}
 library(xlsx)
+library(MKmisc)
 ```
 
 
@@ -25,7 +26,9 @@ if (!file.exists("data")) {
   dir.create("data")
 }
 
-# !!!This version of file fails. Troubleshoot. Below code worked with manually imported version of file.
+# !!!This version of file via automated download fails. 
+# Remainder of code for assigment assumes manually imported version of .xlsx file located in data subdirectory
+# of working (.rproj) directory
 am.url <- "http://onlinestatbook.com/2/case_studies/data/angry_moods.xls"
 am.file <- "./data/angry_moods.xls"
 if (!file.exists(am.file)) {
@@ -64,19 +67,57 @@ Non-Athlete Control-out Mean | `r round(ctlout.nonath.mean, 2)` |
 
 ## Q17.
 
+Box plot of Anger Expression Index by sports participation using Type 6, Lohninger, n+1 calculation of hinges, as
+recommended by Introduction to Statistics, David Lane (Accessed at http://onlinestatbook.com/2/index.html).
+
+```{r}
+list.q17 <- list(
+  Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
+  "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
+quantile(am.df$Anger_Expression[am.df$Sports==1], type = 6)
+quantile(am.df$Anger_Expression[am.df$Sports!=1], type = 6)
+qboxplot(list.q17, type = 6, range = 1.5, main = "Anger Expression Index, Type 6")
+```
+
+Box plot of Anger Expression Index by sports participation using Type 7 calculation of hinges, per R default.
+
 ```{r q17}
 list.q17 <- list(
   Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
   "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
-boxplot(list.q17, main = "Anger Expression Index")
+quantile(am.df$Anger_Expression[am.df$Sports==1], type = 7)
+quantile(am.df$Anger_Expression[am.df$Sports!=1], type = 7)
+boxplot(list.q17, main = "Anger Expression Index, Type 7")
 ```
 
+### Analysis
+
+Depending on method of calculation, the lowest Anger Expression Index in the Non-Athletes group is either an outlier 
+(Type 7 calculation of hinges) or at least lies near the edge of the lower inner fence.
+
+The non-athletic group showed greater variability than the athletic group, with some extreme lower values (per above) of the
+non-athletes showing lower expression of anger than the athletes. However, overall the central tendancy of athletic group
+demonstrated a lower Anger Expression Index (interpreted as expressing less anger) than the non-athletic group.
+
 ## Q18.
+
+Box plot of Anger Expression Index by gender using Type 6, Lohninger, n+1 calculation of hinges, as
+recommended by Introduction to Statistics, David Lane (Accessed at http://onlinestatbook.com/2/index.html).
+
+```{r}
+list.q17 <- list(
+  Male = am.df$Anger_Expression[am.df$Gender == 1], 
+  Female = am.df$Anger_Expression[am.df$Gender == 2])
+qboxplot(list.q17, type = 6, main = "Anger Expression Index, Type 6")
+```
+
+Box plot of Anger Expression Index by gender using Type 7 calculation of hinges, per R default.
+
 ```{r q18}
 list.q17 <- list(
   Male = am.df$Anger_Expression[am.df$Gender == 1], 
   Female = am.df$Anger_Expression[am.df$Gender == 2])
-boxplot(list.q17, main = "Anger Expression Index")
+boxplot(list.q17, main = "Anger Expression Index, Type 7")
 ```
 
 ## Q20.
@@ -100,9 +141,9 @@ r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt
 r <- cor(x, y, method = "pearson")
 ```
 
-Manual calculation of correlation between Control-In and Control-Out - `r round(r.manual, 4)`
+Manual calculation of correlation between Control-In and Control-Out: `r round(r.manual, 4)`
 
-Calculation of correlation between Control-In and Control-Out using cor() - `r round(r, 4)`
+Calculation of correlation between Control-In and Control-Out using cor(): `r round(r, 4)`
 
 ```{r q20-significance}
 # Calculate t-value using previously calculated correlation, r.
@@ -121,12 +162,31 @@ cor.test(x, y, alternative = "two.sided", method = "pearson", conf.level = 0.99)
 
 Is this correlation statistically significant at the 0.01 level? `r significant`
 
-## Including Plots
+## Q21.
 
-You can also embed plots, for example:
+Since the variable Anger-Out measures the extent that subjects express their anger outwardly, and the variable Control-Out
+measures the extent that subjects control the outward expression of anger, I hypothesize that the two variables have a
+negative correlation.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Scatter plot to visualize correlation of Control-In and Control-Out.
+
+```{r q21-plot}
+plot(am.df$Anger.Out, am.df$Control.Out)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r q21-correlation}
+x <- am.df$Anger.Out
+y <- am.df$Control.Out
+x.bar <- mean(x)
+y.bar <- mean(y)
+
+# Calculate Pearson's correlation manually
+r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt(sum((y - y.bar)^2))))
+
+# Calculate Pearson's correlation with built-in R function
+r <- cor(x, y, method = "pearson")
+```
+
+Manual calculation of correlation between Anger-Out and Control-Out: `r round(r.manual, 4)`
+
+Calculation of correlation between Anger-Out and Control-Out using cor(): `r round(r, 4)`
