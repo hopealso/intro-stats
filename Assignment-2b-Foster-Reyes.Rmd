@@ -65,18 +65,18 @@ normal.out <- function(p) {
   return(round(qnorm(p, mean = ae.mean, sd = ae.sd), 3))
 }
 
-actual.out <- function(p) {
-  return(round(qnorm(p, mean = ae.mean, sd = ae.sd), 3))
+actual.out <- function(p, type = 7) {
+  return(round(quantile(am.df$Anger_Expression, p, type = type), 3))
 }
 
 ```
 
 
-Percentile  | Normal Distribution  | Actual  |
-------------|----------------------|---------| 
-25          | `r normal.out(0.25)` | |
-50          | `r normal.out(0.50)` | |
-75          | `r normal.out(0.75)` | |
+Percentile  | b. Normal Distribution  | Actual (Type 6)  | Actual (Type 7)  |
+------------|-------------------------|------------------|------------------| 
+25          | `r normal.out(0.25)` | `r actual.out(0.25, 6)` | `r actual.out(0.25, 6)` |
+50          | `r normal.out(0.50)` | `r actual.out(0.50, 6)` | `r actual.out(0.50, 6)` |
+75          | `r normal.out(0.75)` | `r actual.out(0.75, 6)` | `r actual.out(0.75, 6)` |
 
 
 ```{r q10}
