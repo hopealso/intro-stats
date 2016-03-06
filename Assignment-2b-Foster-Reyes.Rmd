@@ -99,7 +99,8 @@ Number of women sampled: `r female.count`
 mf.mean.diff <- mean(am.df$Anger.Out[am.df$Gender == 1]) - mean(am.df$Anger.Out[am.df$Gender == 2])
 ```
 
-Difference of means between male Anger-Out and female Anger-Out scores in sample: `r mf.mean.diff`
+Difference of means between male Anger-Out and female Anger-Out scores in sample: 
+$M_{AOm}$ - $M_{AOf}$ = `r mf.mean.diff`
 
 ```{r q10}
 hist(am.df$Control.Out, main = "Control-Out Scores")
@@ -108,9 +109,23 @@ hist(am.df$Control.Out, main = "Control-Out Scores")
 ## Chapter 9, Q25
 
 Population difference of means between male Anger-Out and female Anger-Out scores: 
-$\mu_AOm$ - $\mu_AOf$ = 2
+$\mu_{AOm}$ - $\mu_{AOf}$ = 2
+
+Population variance for male Angler-Out scores: $\sigma_{AOm}^2$ = 20
+
+Population variance for female Angler-Out scores: $\sigma_{AOf}^2$ = 20
 
 ### a.
+
+Mean of the sampling distribution of the difference between means:
+$\mu_{M_{AOm}}$ - $\mu_{M_{AOf}}$ = $\mu_{AOm}$ - $\mu_{AOf}$ = 2
+
+### b.
+
+Standard error of the difference between means:
+
+### c.
+
 
 
 ## Q11.
