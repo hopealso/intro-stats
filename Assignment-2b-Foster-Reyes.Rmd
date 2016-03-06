@@ -102,7 +102,8 @@ mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
 ```
 
 Difference of means between male Anger-Out and female Anger-Out scores in sample: 
-$M_{AOm}$ - $M_{AOf}$ = `r mf.sample.mean.diff`
+
+$M_{AOm} - M_{AOf}$ = `r mf.sample.mean.diff`
 
 ## Chapter 9, Q25
 
@@ -114,7 +115,7 @@ female.pop.variance <- 20
 
 Population difference of means between male Anger-Out and female Anger-Out scores: 
 
-$\mu_{AOm}$ - $\mu_{AOf}$ = `r mf.pop.mu.diff`
+$\mu_{AOm} - \mu_{AOf}$ = `r mf.pop.mu.diff`
 
 Population variance for male Angler-Out scores: $\sigma_{AOm}^2$ = `r male.pop.variance`
 
@@ -123,11 +124,11 @@ Population variance for female Angler-Out scores: $\sigma_{AOf}^2$ = `r female.p
 ### a.
 
 Mean of the sampling distribution of the difference between means:
-$\mu_{M_{AOm}}$ - $\mu_{M_{AOf}}$ = $\mu_{AOm}$ - $\mu_{AOf}$ = `r mf.pop.mu.diff`
+$\mu_{M_{AOm}} - \mu_{M_{AOf}} = \mu_{AOm} - \mu_{AOf}$ = `r mf.pop.mu.diff`
 
 ### b.
 
-```{r}
+```{r 9-q25b}
 male.sampling.variance <- male.pop.variance / male.sample.size
 female.sampling.variance <- female.pop.variance / female.sample.size
 mf.sampling.diff.variance <- male.sampling.variance + female.sampling.variance
@@ -152,7 +153,7 @@ $\sigma_{M_{AOm} - M_{AOf}} =$ `r mf.sampling.diff.se`
 
 ### c.
 
-```{r}
+```{r 9-q25c}
 p.sample.mean.diff <- pnorm(mf.sample.mean.diff, mean = mf.pop.mu.diff, sd = mf.sampling.diff.se)
 ```
 
