@@ -81,30 +81,28 @@ Percentile  | b. Normal Distribution  | c. Actual (Type 6)   |
 ## Chapter 9, Q23
 
 ```{r 9-q23}
-male.count <- sum(am.df$Gender == 1)
-female.count <- sum(am.df$Gender == 2)
+male.sample.size <- sum(am.df$Gender == 1)
+female.sample.size <- sum(am.df$Gender == 2)
 ```
 
 ### a. 
 
-Number of men sampled: `r male.count`
+Number of men sampled: `r male.sample.size`
 
 ### b.
 
-Number of women sampled: `r female.count`
+Number of women sampled: `r female.sample.size`
 
 ## Chapter 9, Q24
 
 ```{r 9-q24}
-mf.sample.mean.diff <- mean(am.df$Anger.Out[am.df$Gender == 1]) - mean(am.df$Anger.Out[am.df$Gender == 2])
+male.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 1])
+female.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 2])
+mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
 ```
 
 Difference of means between male Anger-Out and female Anger-Out scores in sample: 
 $M_{AOm}$ - $M_{AOf}$ = `r mf.sample.mean.diff`
-
-```{r q10}
-hist(am.df$Control.Out, main = "Control-Out Scores")
-```
 
 ## Chapter 9, Q25
 
@@ -130,16 +128,36 @@ $\mu_{M_{AOm}}$ - $\mu_{M_{AOf}}$ = $\mu_{AOm}$ - $\mu_{AOf}$ = `r mf.pop.mu.dif
 ### b.
 
 ```{r}
-male.sampling.variance <- male.pop.variance / male.count
-female.sampling.variance <- female.pop.variance / female.count
-mf.sampling.variance.diff <- male.sampling.variance + female.sampling.variance
+male.sampling.variance <- male.pop.variance / male.sample.size
+female.sampling.variance <- female.pop.variance / female.sample.size
+mf.sampling.diff.variance <- male.sampling.variance + female.sampling.variance
+mf.sampling.diff.se <- sqrt(mf.sampling.diff.variance)
 ```
 
 Standard error of the difference between means:
 
-$\sigma_{M_{AOm} - M_{AOf}}$ = 
+`r mf.sampling.diff.se`
+
+$\sigma_{M_{AOm} - M_{AOf}} = \sqrt{\frac{\sigma_{AOm}^2}{n_{AOm}} + \frac{\sigma_{AOf}^2}{n_{AOf}}}$
+
+$\sigma_{M_{AOm}}^2 = \frac{\sigma_{AOm}^2}{n_{AOm}}$ = `r male.sampling.variance`
+
+$\sigma_{M_{AOf}}^2 = \frac{\sigma_{AOf}^2}{n_{AOf}}$ = `r female.sampling.variance`
+
+$\sigma_{M_{AOm} - M_{AOf}}^2 = \sigma_{M_{AOm}}^2 + \sigma_{M_{AOf}}^2$
+
+$\sigma_{M_{AOm} - M_{AOf}} = \sqrt{`r male.sampling.variance` + `r female.sampling.variance`}$
+
+$\sigma_{M_{AOm} - M_{AOf}} =$ `r mf.sampling.diff.se`
 
 ### c.
+
+```{r}
+p.sample.mean.diff <- pnorm(mf.sample.mean.diff, mean = mf.pop.mu.diff, sd = mf.sampling.diff.se)
+```
+
+Probability of a difference of `r mf.sample.mean.diff` between male and female Anger-Out scores: `r p.sample.mean.diff`
+
 
 
 
