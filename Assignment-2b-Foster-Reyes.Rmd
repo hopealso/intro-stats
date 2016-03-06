@@ -81,8 +81,8 @@ Percentile  | b. Normal Distribution  | c. Actual (Type 6)   |
 ## Chapter 9, Q23
 
 ```{r 9-q23}
-male.count <- length(am.df$Anger_Expression[am.df$Gender == 1])
-female.count <- length(am.df$Anger_Expression[am.df$Gender == 2])
+male.count <- sum(am.df$Gender == 1)
+female.count <- sum(am.df$Gender == 2)
 ```
 
 ### a. 
@@ -93,12 +93,25 @@ Number of men sampled: `r male.count`
 
 Number of women sampled: `r female.count`
 
+## Chapter 9, Q24
 
+```{r 9-q24}
+mf.mean.diff <- mean(am.df$Anger.Out[am.df$Gender == 1]) - mean(am.df$Anger.Out[am.df$Gender == 2])
+```
 
+Difference of means between male Anger-Out and female Anger-Out scores in sample: `r mf.mean.diff`
 
 ```{r q10}
 hist(am.df$Control.Out, main = "Control-Out Scores")
 ```
+
+## Chapter 9, Q25
+
+Population difference of means between male Anger-Out and female Anger-Out scores: 
+$\mu_AOm$ - $\mu_AOf$ = 2
+
+### a.
+
 
 ## Q11.
 
