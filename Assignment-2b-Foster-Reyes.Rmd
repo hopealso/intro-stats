@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 2b"
 author: "Hope Foster-Reyes"
 date: "March 3, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -96,11 +96,11 @@ Number of women sampled: `r female.count`
 ## Chapter 9, Q24
 
 ```{r 9-q24}
-mf.mean.diff <- mean(am.df$Anger.Out[am.df$Gender == 1]) - mean(am.df$Anger.Out[am.df$Gender == 2])
+mf.sample.mean.diff <- mean(am.df$Anger.Out[am.df$Gender == 1]) - mean(am.df$Anger.Out[am.df$Gender == 2])
 ```
 
 Difference of means between male Anger-Out and female Anger-Out scores in sample: 
-$M_{AOm}$ - $M_{AOf}$ = `r mf.mean.diff`
+$M_{AOm}$ - $M_{AOf}$ = `r mf.sample.mean.diff`
 
 ```{r q10}
 hist(am.df$Control.Out, main = "Control-Out Scores")
@@ -108,162 +108,38 @@ hist(am.df$Control.Out, main = "Control-Out Scores")
 
 ## Chapter 9, Q25
 
+```{r 9-q25}
+mf.pop.mu.diff <- 2
+male.pop.variance <- 20
+female.pop.variance <- 20
+```
+
 Population difference of means between male Anger-Out and female Anger-Out scores: 
-$\mu_{AOm}$ - $\mu_{AOf}$ = 2
 
-Population variance for male Angler-Out scores: $\sigma_{AOm}^2$ = 20
+$\mu_{AOm}$ - $\mu_{AOf}$ = `r mf.pop.mu.diff`
 
-Population variance for female Angler-Out scores: $\sigma_{AOf}^2$ = 20
+Population variance for male Angler-Out scores: $\sigma_{AOm}^2$ = `r male.pop.variance`
+
+Population variance for female Angler-Out scores: $\sigma_{AOf}^2$ = `r female.pop.variance`
 
 ### a.
 
 Mean of the sampling distribution of the difference between means:
-$\mu_{M_{AOm}}$ - $\mu_{M_{AOf}}$ = $\mu_{AOm}$ - $\mu_{AOf}$ = 2
+$\mu_{M_{AOm}}$ - $\mu_{M_{AOf}}$ = $\mu_{AOm}$ - $\mu_{AOf}$ = `r mf.pop.mu.diff`
 
 ### b.
 
+```{r}
+male.sampling.variance <- male.pop.variance / male.count
+female.sampling.variance <- female.pop.variance / female.count
+mf.sampling.variance.diff <- male.sampling.variance + female.sampling.variance
+```
+
 Standard error of the difference between means:
+
+$\sigma_{M_{AOm} - M_{AOf}}$ = 
 
 ### c.
 
 
 
-## Q11.
-
-```{r q11}
-ctlout.mean <- mean(am.df$Control.Out)
-ctlout.athete.mean <- mean(am.df$Control.Out[am.df$Sports == 1])
-ctlout.nonath.mean <- mean(am.df$Control.Out[am.df$Sports != 1])
-```
-
-Mean                         | Result  |
------------------------------|---------| 
-Overall Control-Out Mean     | `r round(ctlout.mean, 2)` |
-Athlete Control-Out Mean     | `r round(ctlout.athete.mean, 2)` |
-Non-Athlete Control-out Mean | `r round(ctlout.nonath.mean, 2)` |
-
-## Q17.
-
-Box plot of Anger Expression Index by sports participation using Type 6, Lohninger, n+1 calculation of hinges, as
-recommended by Introduction to Statistics, David Lane (Accessed at http://onlinestatbook.com/2/index.html).
-
-```{r}
-list.q17 <- list(
-  Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
-  "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
-quantile(am.df$Anger_Expression[am.df$Sports==1], type = 6)
-quantile(am.df$Anger_Expression[am.df$Sports!=1], type = 6)
-qboxplot(list.q17, type = 6, range = 1.5, main = "Anger Expression Index, Type 6")
-```
-
-Box plot of Anger Expression Index by sports participation using Type 7 calculation of hinges, per R default.
-
-```{r q17}
-list.q17 <- list(
-  Athletes = am.df$Anger_Expression[am.df$Sports == 1], 
-  "Non-Athletes" = am.df$Anger_Expression[am.df$Sports != 1])
-quantile(am.df$Anger_Expression[am.df$Sports==1], type = 7)
-quantile(am.df$Anger_Expression[am.df$Sports!=1], type = 7)
-boxplot(list.q17, main = "Anger Expression Index, Type 7")
-```
-
-### Analysis
-
-Depending on method of calculation, the lowest Anger Expression Index in the Non-Athletes group is either an outlier 
-(Type 7 calculation of hinges) or at least lies near the edge of the lower inner fence.
-
-The non-athletic group showed greater variability than the athletic group, with some extreme lower values (per above) of the
-non-athletes showing lower expression of anger than the athletes. However, overall the central tendancy of athletic group
-demonstrated a lower Anger Expression Index (interpreted as expressing less anger) than the non-athletic group.
-
-## Q18.
-
-Box plot of Anger Expression Index by gender using Type 6, Lohninger, n+1 calculation of hinges, as
-recommended by Introduction to Statistics, David Lane (Accessed at http://onlinestatbook.com/2/index.html).
-
-```{r}
-list.q17 <- list(
-  Male = am.df$Anger_Expression[am.df$Gender == 1], 
-  Female = am.df$Anger_Expression[am.df$Gender == 2])
-qboxplot(list.q17, type = 6, main = "Anger Expression Index, Type 6")
-```
-
-Box plot of Anger Expression Index by gender using Type 7 calculation of hinges, per R default.
-
-```{r q18}
-list.q17 <- list(
-  Male = am.df$Anger_Expression[am.df$Gender == 1], 
-  Female = am.df$Anger_Expression[am.df$Gender == 2])
-boxplot(list.q17, main = "Anger Expression Index, Type 7")
-```
-
-## Q20.
-
-Scatter plot to visualize correlation of Control-In and Control-Out.
-
-```{r q20-plot}
-plot(am.df$Control.In, am.df$Control.Out)
-```
-
-```{r q20-correlation}
-x <- am.df$Control.In
-y <- am.df$Control.Out
-x.bar <- mean(x)
-y.bar <- mean(y)
-
-# Calculate Pearson's correlation manually
-r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt(sum((y - y.bar)^2))))
-
-# Calculate Pearson's correlation with built-in R function
-r <- cor(x, y, method = "pearson")
-```
-
-Manual calculation of correlation between Control-In and Control-Out: `r round(r.manual, 4)`
-
-Calculation of correlation between Control-In and Control-Out using cor(): `r round(r, 4)`
-
-```{r q20-significance}
-# Calculate t-value using previously calculated correlation, r.
-t <- r * (sqrt(nrow(am.df) - 2) / sqrt(1 - r^2))
-
-# Set critical value based on t-table lookup (provided by TA).
-critical.value <- 2.374
-
-# Test for significance using t value.
-significant <- t > critical.value
-
-# Check built-in cor.test()
-cor.test(x, y, alternative = "two.sided", method = "pearson", conf.level = 0.99)
-
-```
-
-Is this correlation statistically significant at the 0.01 level? `r significant`
-
-## Q21.
-
-Since the variable Anger-Out measures the extent that subjects express their anger outwardly, and the variable Control-Out
-measures the extent that subjects control the outward expression of anger, I hypothesize that the two variables have a
-negative correlation.
-
-Scatter plot to visualize correlation of Control-In and Control-Out.
-
-```{r q21-plot}
-plot(am.df$Anger.Out, am.df$Control.Out)
-```
-
-```{r q21-correlation}
-x <- am.df$Anger.Out
-y <- am.df$Control.Out
-x.bar <- mean(x)
-y.bar <- mean(y)
-
-# Calculate Pearson's correlation manually
-r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt(sum((y - y.bar)^2))))
-
-# Calculate Pearson's correlation with built-in R function
-r <- cor(x, y, method = "pearson")
-```
-
-Manual calculation of correlation between Anger-Out and Control-Out: `r round(r.manual, 4)`
-
-Calculation of correlation between Anger-Out and Control-Out using cor(): `r round(r, 4)`
