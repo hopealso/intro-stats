@@ -49,7 +49,7 @@ am.df <- read.xlsx(am.file,
 
 ### a.
 
-```{r}
+```{r 7-q22-a}
 ae.mean <- mean(am.df$Anger_Expression)
 ae.sd <- sd(am.df$Anger_Expression)
 ```
@@ -58,25 +58,42 @@ Anger Expression $\mu$: `r round(ae.mean, 3)`
 
 Anger Expression $\sigma$: `r round(ae.sd, 3)`
 
-### b & c.
+### b. & c.
 
-```{r}
+```{r 7-q22-b}
 normal.out <- function(p) {
   return(round(qnorm(p, mean = ae.mean, sd = ae.sd), 3))
 }
 
-actual.out <- function(p, type = 7) {
+actual.out <- function(p, type = 6) {
   return(round(quantile(am.df$Anger_Expression, p, type = type), 3))
 }
 
 ```
 
+Percentile  | b. Normal Distribution  | c. Actual (Type 6)   |
+------------|-------------------------|----------------------|
+25          | `r normal.out(0.25)` | `r actual.out(0.25, 6)` |
+50          | `r normal.out(0.50)` | `r actual.out(0.50, 6)` |
+75          | `r normal.out(0.75)` | `r actual.out(0.75, 6)` |
 
-Percentile  | b. Normal Distribution  | Actual (Type 6)  | Actual (Type 7)  |
-------------|-------------------------|------------------|------------------| 
-25          | `r normal.out(0.25)` | `r actual.out(0.25, 6)` | `r actual.out(0.25, 6)` |
-50          | `r normal.out(0.50)` | `r actual.out(0.50, 6)` | `r actual.out(0.50, 6)` |
-75          | `r normal.out(0.75)` | `r actual.out(0.75, 6)` | `r actual.out(0.75, 6)` |
+
+## Chapter 9, Q23
+
+```{r 9-q23}
+male.count <- length(am.df$Anger_Expression[am.df$Gender == 1])
+female.count <- length(am.df$Anger_Expression[am.df$Gender == 2])
+```
+
+### a. 
+
+Number of men sampled: `r male.count`
+
+### b.
+
+Number of women sampled: `r female.count`
+
+
 
 
 ```{r q10}
