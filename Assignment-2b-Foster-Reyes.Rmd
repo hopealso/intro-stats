@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 2b"
 author: "Hope Foster-Reyes"
 date: "March 3, 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -27,8 +27,8 @@ if (!file.exists("data")) {
 }
 
 # !!!This version of file via automated download fails. 
-# Remainder of code for assigment assumes manually imported version of .xlsx file located in data subdirectory
-# of working (.rproj) directory
+# Remainder of code for assigment assumes manually imported version of .xlsx file located 
+# in data subdirectory of working (.rproj) directory
 am.url <- "http://onlinestatbook.com/2/case_studies/data/angry_moods.xls"
 am.file <- "./data/angry_moods.xls"
 if (!file.exists(am.file)) {
@@ -54,9 +54,9 @@ ae.mean <- mean(am.df$Anger_Expression)
 ae.sd <- sd(am.df$Anger_Expression)
 ```
 
-Anger Expression $\mu$: `r round(ae.mean, 3)`
+Anger Expression Mean (M, or $\bar{x}$): `r round(ae.mean, 3)`
 
-Anger Expression $\sigma$: `r round(ae.sd, 3)`
+Anger Expression Standard Deviation (s): `r round(ae.sd, 3)`
 
 ### b. & c.
 
@@ -76,6 +76,15 @@ Percentile  | b. Normal Distribution  | c. Actual (Type 6)   |
 25          | `r normal.out(0.25)` | `r actual.out(0.25, 6)` |
 50          | `r normal.out(0.50)` | `r actual.out(0.50, 6)` |
 75          | `r normal.out(0.75)` | `r actual.out(0.75, 6)` |
+
+Bonus plots comparing normal with actual distribution:
+
+```{r}
+x <- seq(6, 68, length=100)
+plot(x, dnorm(x, mean = ae.mean, sd = ae.sd), type = "l", main = "Normal Distribution")
+
+hist(am.df$Anger_Expression, main="Actual")
+```
 
 
 ## Chapter 9, Q23
