@@ -54,9 +54,9 @@ ae.mean <- mean(am.df$Anger_Expression)
 ae.sd <- sd(am.df$Anger_Expression)
 ```
 
-Anger Expression Mean (M, or $\bar{x}$): `r round(ae.mean, 3)`
+Anger Expression Mean ($\bar{x}_{AE}$): `r round(ae.mean, 3)`
 
-Anger Expression Standard Deviation (s): `r round(ae.sd, 3)`
+Anger Expression Standard Deviation ($s_{AE}$): `r round(ae.sd, 3)`
 
 ### b. & c.
 
@@ -96,11 +96,11 @@ female.sample.size <- sum(am.df$Gender == 2)
 
 ### a. 
 
-Number of men sampled: `r male.sample.size`
+Number of men sampled: $n_{AOm} =$ `r male.sample.size`
 
 ### b.
 
-Number of women sampled: `r female.sample.size`
+Number of women sampled: $n_{AOf} =$ `r female.sample.size`
 
 ## Chapter 9, Q24
 
@@ -112,7 +112,7 @@ mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
 
 Difference of means between male Anger-Out and female Anger-Out scores in sample: 
 
-$M_{AOm} - M_{AOf}$ = `r mf.sample.mean.diff`
+$\bar{x}_{AOm} - \bar{x}_{AOf}$ = `r mf.sample.mean.diff`
 
 ## Chapter 9, Q25
 
@@ -133,7 +133,7 @@ Population variance for female Angler-Out scores: $\sigma_{AOf}^2$ = `r female.p
 ### a.
 
 Mean of the sampling distribution of the difference between means:
-$\mu_{M_{AOm}} - \mu_{M_{AOf}} = \mu_{AOm} - \mu_{AOf}$ = `r mf.pop.mu.diff`
+$\mu_{\bar{x}_{AOm}} - \mu_{\bar{x}_{AOf}} = \mu_{AOm} - \mu_{AOf}$ = `r mf.pop.mu.diff`
 
 ### b.
 
@@ -148,17 +148,17 @@ Standard error of the difference between means:
 
 `r mf.sampling.diff.se`
 
-$\sigma_{M_{AOm} - M_{AOf}} = \sqrt{\frac{\sigma_{AOm}^2}{n_{AOm}} + \frac{\sigma_{AOf}^2}{n_{AOf}}}$
+$\sigma_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{\frac{\sigma_{AOm}^2}{n_{AOm}} + \frac{\sigma_{AOf}^2}{n_{AOf}}}$
 
-$\sigma_{M_{AOm}}^2 = \frac{\sigma_{AOm}^2}{n_{AOm}}$ = `r male.sampling.variance`
+$\sigma_{\bar{x}_{AOm}}^2 = \frac{\sigma_{AOm}^2}{n_{AOm}}$ = `r male.sampling.variance`
 
-$\sigma_{M_{AOf}}^2 = \frac{\sigma_{AOf}^2}{n_{AOf}}$ = `r female.sampling.variance`
+$\sigma_{\bar{x}_{AOf}}^2 = \frac{\sigma_{AOf}^2}{n_{AOf}}$ = `r female.sampling.variance`
 
-$\sigma_{M_{AOm} - M_{AOf}}^2 = \sigma_{M_{AOm}}^2 + \sigma_{M_{AOf}}^2$
+$\sigma_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 = \sigma_{\bar{x}_{AOm}}^2 + \sigma_{\bar{x}_{AOf}}^2$
 
-$\sigma_{M_{AOm} - M_{AOf}} = \sqrt{`r male.sampling.variance` + `r female.sampling.variance`}$
+$\sigma_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{`r male.sampling.variance` + `r female.sampling.variance`}$
 
-$\sigma_{M_{AOm} - M_{AOf}} =$ `r mf.sampling.diff.se`
+$\sigma_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.se`
 
 ### c.
 
