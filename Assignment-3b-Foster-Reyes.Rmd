@@ -87,6 +87,9 @@ df <- (male.sample.size - 1) + (female.sample.size - 1)
 Y <- 0.99
 t <- qt((1 - Y)/2, df = df, lower.tail = FALSE)
 
+LL <- male.sample.mean - female.sample.mean - (t * mf.sampling.diff.estse)
+UL <- male.sample.mean - female.sample.mean + (t * mf.sampling.diff.estse)
+
 ```
 
 Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
@@ -96,4 +99,12 @@ t Critical Value = `r t`
 
 Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
-Upper Limit = 
+Lower Limit = `r male.sample.mean` - `r female.sample.mean` - (`r t`)(`r mf.sampling.diff.estse`)
+
+Lower Limit = `r LL`
+
+Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+
+Lower Limit = `r male.sample.mean` - `r female.sample.mean` + (`r t`)(`r mf.sampling.diff.estse`)
+
+Upper Limit = `r UL`
