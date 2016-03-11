@@ -47,3 +47,22 @@ am.df <- read.xlsx(am.file,
 ```
 
 ## Chapter 10, Q24.
+
+```{r}
+male.sd <- sd(am.df$Anger.Out[am.df$Gender == 1])
+female.sd <- sd(am.df$Anger.Out[am.df$Gender == 2])
+
+```
+
+99% Confidence Interval on the difference between gender means:
+
+
+
+1. First, estimate the standard error of the difference between means:
+
+$s_{AOm} = $ `r male.sd`
+$s_{AOf} = $ `r female.sd`
+
+Because these samples do not have the same sample size, rather than use the MSE we will calculate the standard error of the difference in means using the following formula:
+
+
