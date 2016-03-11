@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 3b"
 author: "Hope Foster-Reyes"
 date: "March 10, 2016"
-output: pdf_document
+output: html_document
 ---
 
 
@@ -49,20 +49,44 @@ am.df <- read.xlsx(am.file,
 ## Chapter 10, Q24.
 
 ```{r}
-male.sd <- sd(am.df$Anger.Out[am.df$Gender == 1])
-female.sd <- sd(am.df$Anger.Out[am.df$Gender == 2])
+male.sample.size <- sum(am.df$Gender == 1)
+female.sample.size <- sum(am.df$Gender == 2)
 
+male.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 1])
+female.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 2])
+
+male.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 1])
+female.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 2])
+
+male.sampling.estvariance <- male.sample.variance / male.sample.size
+female.sampling.estvariance <- female.sample.variance / female.sample.size
+mf.sampling.diff.estvariance <- male.sampling.estvariance + female.sampling.estvariance
+mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
 ```
 
 99% Confidence Interval on the difference between gender means:
 
+### 1. First, estimate the standard error of the difference between means:
 
+Because these samples do *not* have the same sample size, rather than use the **MSE** we will estimate the standard error of the difference in means using the **variance sum law**:
 
-1. First, estimate the standard error of the difference between means:
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 = s_{\bar{x}_{AOm}}^2 + s_{\bar{x}_{AOf}}^2$
 
-$s_{AOm} = $ `r male.sd`
-$s_{AOf} = $ `r female.sd`
+$s_{\bar{x}_{AOm}}^2 = \frac{s_{AOm}^2}{n_{AOm}}$ = `r male.sampling.estvariance`
 
-Because these samples do not have the same sample size, rather than use the MSE we will calculate the standard error of the difference in means using the following formula:
+$s_{\bar{x}_{AOf}}^2 = \frac{s_{AOf}^2}{n_{AOf}}$ = `r female.sampling.estvariance`
+
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{`r male.sampling.estvariance` + `r female.sampling.estvariance`}$
+
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.estse`
+
+### 2. Next, find t critical value:
+
+```{r}
+df <- (male.sample.size - 1) + (female.sample.size - 1)
+
+```
+
+df = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
 
 
