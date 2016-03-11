@@ -66,7 +66,7 @@ mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
 
 99% Confidence Interval on the difference between gender means:
 
-### 1. First, estimate the standard error of the difference between means:
+### 1. Estimate the standard error of the difference between means:
 
 Because these samples do *not* have the same sample size, rather than use the **MSE** we will estimate the standard error of the difference in means using the **variance sum law**:
 
@@ -80,13 +80,20 @@ $s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{`r male.sampling.estvariance` + `r fe
 
 $s_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.estse`
 
-### 2. Next, find t critical value:
+### 2. Find t critical value:
 
 ```{r}
 df <- (male.sample.size - 1) + (female.sample.size - 1)
+Y <- 0.99
+t <- qt((1 - Y)/2, df = df, lower.tail = FALSE)
 
 ```
 
-df = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
+Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
+t Critical Value = `r t`
 
+### 3. Calculate confidence interval:
 
+Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+
+Upper Limit = 
