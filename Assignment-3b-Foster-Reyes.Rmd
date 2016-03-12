@@ -78,9 +78,9 @@ boxplot(list.q24, main = "Anger Out Scores, Type 7")
 ### 2. Estimate the standard error of the difference between means:
 
 ```{r q24-estse}
-m.SS <- sum((am.df$Anger.Out[am.df$Gender == 1] - male.sample.mean)^2)
-f.SS <- sum((am.df$Anger.Out[am.df$Gender == 2] - female.sample.mean)^2)
-mf.SSE <- m.SS + f.SS
+male.SS <- sum((am.df$Anger.Out[am.df$Gender == 1] - male.sample.mean)^2)
+female.SS <- sum((am.df$Anger.Out[am.df$Gender == 2] - female.sample.mean)^2)
+mf.SSE <- male.SS + female.SS
 
 mf.df <- (male.sample.size - 1) + (female.sample.size - 1)
 mf.MSE <- mf.SSE / mf.df
@@ -89,14 +89,13 @@ mf.hmean <- 2 / (1/male.sample.size + 1/female.sample.size)
 mf.sampling.diff.estse <- sqrt(2* mf.MSE / mf.hmean)
 ```
 
-
 $s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{\frac{2MSE}{n_h}}$
 
 $MSE = \frac{SSE}{df}$
 
 $SSE = \sum_{i}^{n} (x_{Aom_{i}} - \bar{x}_{AOm})^2 + \sum_{i}^{n} (x_{AOf_i} - \bar{x}_{AOf})^2$
 
-$SSE = \sum_{i}^{`r male.sample.size`}(x_{Aom_{i}} - `r male.sample.mean`)^2 +
+$SSE = \sum_{i}^{`r male.sample.size`}(x_{AOm_{i}} - `r male.sample.mean`)^2 +
   \sum_{i}^{`r female.sample.size`}(x_{AOf_i} - `r female.sample.mean`)^2$
   
 $SSE = `r mf.SSE`$
@@ -128,13 +127,13 @@ Degrees of Freedom = `r mf.df`
 
 ### 4. Calculate confidence interval:
 
-Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t.99)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
 Lower Limit = `r male.sample.mean` - `r female.sample.mean` - (`r t.99`)(`r mf.sampling.diff.estse`)
 
 Lower Limit = `r mf.LL`
 
-Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t.99)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
 Lower Limit = `r male.sample.mean` - `r female.sample.mean` + (`r t.99`)(`r mf.sampling.diff.estse`)
 
@@ -150,7 +149,7 @@ Based on a 99% confidence interval on the difference between gender means, we ca
 
 99% Confidence Interval on the difference between gender means:
 
-`r LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r UL`
+`r mf.LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r mf.UL`
 
 ## Chapter 10, Q25.
 
@@ -164,6 +163,10 @@ ath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 1])
 nonath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 2])
 an.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
 ```
+
+$\bar{x}_{AIa}$ = `r ath.sample.mean`
+
+$\bar{x}_{AIn}$ = `r nonath.sample.mean`
 
 $\bar{x}_{AIa} - \bar{x}_{AIn}$ = `r an.sample.mean.diff`
 
@@ -180,60 +183,71 @@ boxplot(list.q25, main = "Anger In Scores, Type 7")
 ### 2. Estimate the standard error of the difference between means:
 
 ```{r q25-estse}
-ath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 1])
-nonath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 2])
+ath.SS <- sum((am.df$Anger.In[am.df$Sports == 1] - ath.sample.mean)^2)
+nonath.SS <- sum((am.df$Anger.In[am.df$Sports == 2] - nonath.sample.mean)^2)
+an.SSE <- ath.SS + nonath.SS
 
-ath.sampling.estvariance <- ath.sample.variance / ath.sample.size
-nonath.sampling.estvariance <- nonath.sample.variance / nonath.sample.size
-an.sampling.diff.estvariance <- ath.sampling.estvariance + nonath.sampling.estvariance
-an.sampling.diff.estse <- sqrt(an.sampling.diff.estvariance)
+an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
+an.MSE <- an.SSE / an.df
+an.hmean <- 2 / (1/ath.sample.size + 1/nonath.sample.size)
+
+an.sampling.diff.estse <- sqrt(2* an.MSE / an.hmean)
 ```
 
-Because these samples do *not* have the same sample size, rather than use the **MSE** formula from the text, we will estimate the standard error of the difference in means using the **variance sum law**:
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} = \sqrt{\frac{2MSE}{n_h}}$
 
-$s_{\bar{x}_{AIa} - \bar{x}_{AIn}}^2 = s_{\bar{x}_{AIa}}^2 + s_{\bar{x}_{AIn}}^2$
+$MSE = \frac{SSE}{df}$
 
-$s_{\bar{x}_{AIa}}^2 = \frac{s_{AIa}^2}{n_{AIa}}$ = `r ath.sampling.estvariance`
+$SSE = \sum_{i}^{n} (x_{Aom_{i}} - \bar{x}_{AIa})^2 + \sum_{i}^{n} (x_{AOf_i} - \bar{x}_{AIn})^2$
 
-$s_{\bar{x}_{AIn}}^2 = \frac{s_{AIn}^2}{n_{AIn}}$ = `r nonath.sampling.estvariance`
+$SSE = \sum_{i}^{`r ath.sample.size`}(x_{AIa_{i}} - `r ath.sample.mean`)^2 +
+  \sum_{i}^{`r nonath.sample.size`}(x_{AIn_i} - `r nonath.sample.mean`)^2$
+  
+$SSE = `r an.SSE`$
 
-$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} = \sqrt{`r ath.sampling.estvariance` + `r nonath.sampling.estvariance`}$
+$df = (n_{AIa} - 1) + (n_{AIn} - 1) = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r an.df`$
 
-$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} =$ `r an.sampling.diff.estse`
+$MSE = \frac{SSE}{df} = \frac{`r an.SSE`}{`r an.df`} = `r an.MSE`$
+
+$n_h = \frac{2}{(\frac{1}{n_{AIa}} + \frac{1}{n_{AIn}})} = \frac{2}{(\frac{1}{`r ath.sample.size`} +
+  \frac{1}{`r nonath.sample.size`})} = `r an.hmean`$
+
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} = \sqrt{\frac{2MSE}{n_h}}$
+
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} = \sqrt{\frac{(2)(`r an.MSE`)}{`r an.hmean`}} = `r an.sampling.diff.estse`$
 
 ### 3. Find t critical value:
 
 ```{r q25-ci}
-an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
 Y.95 <- 0.95
 t.95 <- qt((1 - Y.95)/2, df = an.df, lower.tail = FALSE)
 
-LL <- ath.sample.mean - nonath.sample.mean - (t.95 * an.sampling.diff.estse)
-UL <- ath.sample.mean - nonath.sample.mean + (t.95 * an.sampling.diff.estse)
+an.LL <- ath.sample.mean - nonath.sample.mean - (t.95 * an.sampling.diff.estse)
+an.UL <- ath.sample.mean - nonath.sample.mean + (t.95 * an.sampling.diff.estse)
 
 ```
 
-Degrees of Freedom = $(n_{AIa} - 1) + (n_{AIn} - 1)$ = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r an.df`
+Degrees of Freedom = `r an.df`
 
 95% t Critical Value= `r t.95`
 
 ### 4. Calculate confidence interval:
 
-Lower Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} - (t.95)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
+Lower Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} - (t)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
 
 Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` - (`r t.95`)(`r an.sampling.diff.estse`)
 
-Lower Limit = `r LL`
+Lower Limit = `r an.LL`
 
-Upper Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} + (t.95)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
+Upper Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} + (t)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
 
 Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` + (`r t.95`)(`r an.sampling.diff.estse`)
 
-Upper Limit = `r UL`
+Upper Limit = `r an.UL`
 
 95% Confidence Level:
 
-`r LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r UL`
+`r an.LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r an.UL`
 
 ### Solution
 
@@ -241,5 +255,5 @@ Based on a 95% confidence interval on the difference between athlete and non-ath
 
 95% Confidence Interval on the difference between athletes and non-athletes:
 
-`r LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r UL`
+`r an.LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r an.UL`
 
