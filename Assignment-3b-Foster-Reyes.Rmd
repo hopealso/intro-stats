@@ -92,29 +92,29 @@ $s_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.estse`
 
 ```{r}
 df <- (male.sample.size - 1) + (female.sample.size - 1)
-Y <- 0.99
-t <- qt((1 - Y)/2, df = df, lower.tail = FALSE)
+Y.99 <- 0.99
+t.99 <- qt((1 - Y.99)/2, df = df, lower.tail = FALSE)
 
-LL <- male.sample.mean - female.sample.mean - (t * mf.sampling.diff.estse)
-UL <- male.sample.mean - female.sample.mean + (t * mf.sampling.diff.estse)
+LL <- male.sample.mean - female.sample.mean - (t.99 * mf.sampling.diff.estse)
+UL <- male.sample.mean - female.sample.mean + (t.99 * mf.sampling.diff.estse)
 
 ```
 
 Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
 
-99% t Critical Value= `r t`
+99% t Critical Value= `r t.99`
 
 ### 4. Calculate confidence interval:
 
-Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t.99)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
-Lower Limit = `r male.sample.mean` - `r female.sample.mean` - (`r t`)(`r mf.sampling.diff.estse`)
+Lower Limit = `r male.sample.mean` - `r female.sample.mean` - (`r t.99`)(`r mf.sampling.diff.estse`)
 
 Lower Limit = `r LL`
 
-Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t.99)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
-Lower Limit = `r male.sample.mean` - `r female.sample.mean` + (`r t`)(`r mf.sampling.diff.estse`)
+Lower Limit = `r male.sample.mean` - `r female.sample.mean` + (`r t.99`)(`r mf.sampling.diff.estse`)
 
 Upper Limit = `r UL`
 
@@ -144,8 +144,8 @@ nonath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 2])
 
 athlete.sampling.estvariance <- ath.sample.variance / ath.sample.size
 nonath.sampling.estvariance <- nonath.sample.variance / nonath.sample.size
-mf.sampling.diff.estvariance <- ath.sampling.estvariance + nonath.sampling.estvariance
-mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
+an.sampling.diff.estvariance <- ath.sampling.estvariance + nonath.sampling.estvariance
+an.sampling.diff.estse <- sqrt(an.sampling.diff.estvariance)
 ```
 
 ### 1. Calculate sample difference between means:
@@ -153,58 +153,58 @@ mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
 ```{r}
 ath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 1])
 nonath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 2])
-mf.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
+an.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
 ```
 
-$\bar{x}_{AOm} - \bar{x}_{AOf}$ = `r mf.sample.mean.diff`
+$\bar{x}_{AIa} - \bar{x}_{AIn}$ = `r an.sample.mean.diff`
 
 ### 2. Estimate the standard error of the difference between means:
 
 Because these samples do *not* have the same sample size, rather than use the **MSE** formula from the text, we will estimate the standard error of the difference in means using the **variance sum law**:
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 = s_{\bar{x}_{AOm}}^2 + s_{\bar{x}_{AOf}}^2$
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}}^2 = s_{\bar{x}_{AIa}}^2 + s_{\bar{x}_{AIn}}^2$
 
-$s_{\bar{x}_{AOm}}^2 = \frac{s_{AOm}^2}{n_{AOm}}$ = `r ath.sampling.estvariance`
+$s_{\bar{x}_{AIa}}^2 = \frac{s_{AIa}^2}{n_{AIa}}$ = `r ath.sampling.estvariance`
 
-$s_{\bar{x}_{AOf}}^2 = \frac{s_{AOf}^2}{n_{AOf}}$ = `r nonath.sampling.estvariance`
+$s_{\bar{x}_{AIn}}^2 = \frac{s_{AIn}^2}{n_{AIn}}$ = `r nonath.sampling.estvariance`
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{`r ath.sampling.estvariance` + `r nonath.sampling.estvariance`}$
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} = \sqrt{`r ath.sampling.estvariance` + `r nonath.sampling.estvariance`}$
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.estse`
+$s_{\bar{x}_{AIa} - \bar{x}_{AIn}} =$ `r an.sampling.diff.estse`
 
 ### 3. Find t critical value:
 
 ```{r}
 df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
-Y <- 0.99
-t <- qt((1 - Y)/2, df = df, lower.tail = FALSE)
+Y.95 <- 0.95
+t.95 <- qt((1 - Y.95)/2, df = df, lower.tail = FALSE)
 
-LL <- ath.sample.mean - nonath.sample.mean - (t * mf.sampling.diff.estse)
-UL <- ath.sample.mean - nonath.sample.mean + (t * mf.sampling.diff.estse)
+LL <- ath.sample.mean - nonath.sample.mean - (t.95 * an.sampling.diff.estse)
+UL <- ath.sample.mean - nonath.sample.mean + (t.95 * an.sampling.diff.estse)
 
 ```
 
-Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r df`
+Degrees of Freedom = $(n_{AIa} - 1) + (n_{AIn} - 1)$ = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r df`
 
-99% t Critical Value= `r t`
+99% t Critical Value= `r t.95`
 
 ### 4. Calculate confidence interval:
 
-Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Lower Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} - (t.95)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
 
-Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` - (`r t`)(`r mf.sampling.diff.estse`)
+Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` - (`r t.95`)(`r an.sampling.diff.estse`)
 
 Lower Limit = `r LL`
 
-Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
+Upper Limit = $\bar{x}_{AIa} - \bar{x}_{AIn} + (t.95)(s_{\bar{x}_{AIa} - \bar{x}_{AIn}})$
 
-Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` + (`r t`)(`r mf.sampling.diff.estse`)
+Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` + (`r t.95`)(`r an.sampling.diff.estse`)
 
 Upper Limit = `r UL`
 
 99% Confidence Level:
 
-`r LL` $\leq \mu_{Aof} - \mu_{AOm} \geq$ `r UL`
+`r LL` $\leq \mu_{AIn} - \mu_{AIa} \geq$ `r UL`
 
 ### Solution
 
@@ -212,5 +212,5 @@ Based on a 99% confidence interval on the difference between geneder means, we c
 
 99% Confidence Interval on the difference between gender means:
 
-`r LL` $\leq \mu_{Aof} - \mu_{AOm} \geq$ `r UL`
+`r LL` $\leq \mu_{AIn} - \mu_{AIa} \geq$ `r UL`
 
