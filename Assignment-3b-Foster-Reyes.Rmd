@@ -257,3 +257,93 @@ Based on a 95% confidence interval on the difference between athlete and non-ath
 
 `r an.LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r an.UL`
 
+## Chapter 10, Q26.
+
+### 1. Calculate sample correlation:
+
+```{r q26-corr}
+x <- am.df$Anger.Out
+y <- am.df$Control.Out
+x.bar <- mean(x)
+y.bar <- mean(y)
+
+# Calculate Pearson's correlation manually
+aoco.r.manual <- sum((x - x.bar) * (y - y.bar)) / ((sqrt(sum((x - x.bar)^2))) * (sqrt(sum((y - y.bar)^2))))
+
+# Calculate Pearson's correlation with built-in R function
+aoco.r <- cor(x, y, method = "pearson")
+```
+
+Manual calculation of correlation between Control-In and Control-Out: 
+
+r = `r aoco.r.manual`
+
+Calculation of correlation between Control-In and Control-Out using cor(): 
+
+r = `r aoco.r`
+
+#### Visualize correlation
+
+```{r q26-plot}
+plot(am.df$Anger.Out, am.df$Control.Out)
+```
+
+### 2. Convert r to z':
+
+```{r q26-to-zprime}
+# Look up on http://onlinestatbook.com/calculators/fisher_z.html
+aoco.zprime <- -0.667
+```
+
+z' = `r aoco.zprime`
+
+### 3. Compute a confidence interval in terms of z':
+
+```{r q26-ci}
+am.sample.size <- nrow(am.df)
+
+aoco.zprime.sampling.se <- 1 / sqrt(am.sample.size - 3)
+
+Z.95 <- qnorm((1 - Y.95)/2, lower.tail = FALSE)
+
+aoco.zprime.LL <- aoco.zprime - Z.95 * aoco.zprime.sampling.se
+aoco.zprime.UL <- aoco.zprime + Z.95 * aoco.zprime.sampling.se
+```
+
+95% Z Critical Value= `r Z.95`
+
+$s_{z'} = \frac{1}{\sqrt{n - 3}} = \frac{1}{\sqrt{`r am.sample.size` - 3}} = `r aoco.zprime.sampling.se`$
+
+Lower Limit = $z' - (Z)(s_{z'})$
+
+Lower Limit = `r aoco.zprime` - (`r Z.95`)(`r aoco.zprime.sampling.se`)
+
+Lower Limit = `r aoco.zprime.LL`
+
+Upper Limit = $z' + (Z)(s_{z'})$
+
+Lower Limit = `r aoco.zprime` + (`r Z.95`)(`r aoco.zprime.sampling.se`)
+
+Upper Limit = `r aoco.zprime.UL`
+
+95% Confidence Level:
+
+`r aoco.zprime.LL` $\leq z' \geq$ `r aoco.zprime.UL`
+
+### 4. Convert the confidence interval back to r:
+
+```{r q26-from-zprime}
+# Look up on http://onlinestatbook.com/calculators/fisher_z.html
+aoco.p.UL <- -0.713
+aoco.p.LL <- -0.414
+```
+
+Lower Limit = `r aoco.p.LL`
+
+Upper Limit = `r aoco.p.UL`
+
+### Solution
+
+95% Confidence Level:
+
+`r aoco.p.LL` $\leq \rho \geq$ `r aoco.p.UL`
