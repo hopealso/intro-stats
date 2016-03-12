@@ -48,25 +48,12 @@ am.df <- read.xlsx(am.file,
 
 ## Chapter 10, Q24.
 
-```{r}
+### 1. Calculate sample difference between means:
+
+```{r q24-mean}
 male.sample.size <- sum(am.df$Gender == 1)
 female.sample.size <- sum(am.df$Gender == 2)
 
-male.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 1])
-female.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 2])
-
-male.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 1])
-female.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 2])
-
-male.sampling.estvariance <- male.sample.variance / male.sample.size
-female.sampling.estvariance <- female.sample.variance / female.sample.size
-mf.sampling.diff.estvariance <- male.sampling.estvariance + female.sampling.estvariance
-mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
-```
-
-### 1. Calculate sample difference between means:
-
-```{r}
 male.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 1])
 female.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 2])
 mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
@@ -74,33 +61,54 @@ mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
 
 $\bar{x}_{AOm} - \bar{x}_{AOf}$ = `r mf.sample.mean.diff`
 
+Visualize distributions:
+
+```{r q24-boxplot}
+list.q24 <- list(
+  Male = am.df$Anger.Out[am.df$Gender == 1], 
+  Female = am.df$Anger.Out[am.df$Gender == 2])
+
+boxplot(list.q24, main = "Anger Out Scores, Type 7")
+```
+
 ### 2. Estimate the standard error of the difference between means:
 
-Because these samples do *not* have the same sample size, rather than use the **MSE** formula from the text, we will estimate the standard error of the difference in means using the **variance sum law**:
+```{r q24-estse}
+# 1st try: estimate standard error of the difference between means using variance sum law
+#male.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 1])
+#female.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 2])
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 = s_{\bar{x}_{AOm}}^2 + s_{\bar{x}_{AOf}}^2$
+#male.sampling.estvariance <- male.sample.variance / male.sample.size
+#female.sampling.estvariance <- female.sample.variance / female.sample.size
+#mf.sampling.diff.estvariance <- male.sampling.estvariance + female.sampling.estvariance
+#mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
 
-$s_{\bar{x}_{AOm}}^2 = \frac{s_{AOm}^2}{n_{AOm}}$ = `r male.sampling.estvariance`
+m.SS <- sum((am.df$Anger.Out[am.df$Gender == 1] - male.sample.mean)^2)
+f.SS <- sum((am.df$Anger.Out[am.df$Gender == 2] - female.sample.mean)^2)
+mf.SSE <- m.SS + f.SS
 
-$s_{\bar{x}_{AOf}}^2 = \frac{s_{AOf}^2}{n_{AOf}}$ = `r female.sampling.estvariance`
+mf.df <- (male.sample.size - 1) + (female.sample.size - 1)
+mf.MSE <- mf.SSE / mf.df
+mf.hmean <- 2 / (1/male.sample.size + 1/female.sample.size)
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{`r male.sampling.estvariance` + `r female.sampling.estvariance`}$
+mf.sampling.diff.estse <- sqrt(2* mf.MSE / mf.hmean)
+```
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} =$ `r mf.sampling.diff.estse`
+
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 =$
 
 ### 3. Find t critical value:
 
-```{r}
-df <- (male.sample.size - 1) + (female.sample.size - 1)
+```{r q24-ci}
 Y.99 <- 0.99
-t.99 <- qt((1 - Y.99)/2, df = df, lower.tail = FALSE)
+t.99 <- qt((1 - Y.99)/2, df = mf.df, lower.tail = FALSE)
 
 LL <- male.sample.mean - female.sample.mean - (t.99 * mf.sampling.diff.estse)
 UL <- male.sample.mean - female.sample.mean + (t.99 * mf.sampling.diff.estse)
 
 ```
 
-Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r df`
+Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r mf.df`
 
 99% t Critical Value= `r t.99`
 
@@ -120,37 +128,24 @@ Upper Limit = `r UL`
 
 99% Confidence Level:
 
-`r LL` $\leq \mu_{Aof} - \mu_{AOm} \geq$ `r UL`
+`r LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r UL`
 
 ### Solution
 
-Based on a 99% confidence interval on the difference between geneder means, we cannot infer a significant difference between the amount that males and females use agressive behavior to improve an angry mood.
+Based on a 99% confidence interval on the difference between gender means, we cannot infer a significant difference between the amount that males and females use agressive behavior to improve an angry mood.
 
 99% Confidence Interval on the difference between gender means:
 
-`r LL` $\leq \mu_{Aof} - \mu_{AOm} \geq$ `r UL`
+`r LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r UL`
 
 ## Chapter 10, Q25.
 
-```{r}
+### 1. Calculate sample difference between means:
+
+```{r q25-mean}
 ath.sample.size <- sum(am.df$Sports == 1)
 nonath.sample.size <- sum(am.df$Sports == 2)
 
-ath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 1])
-nonath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 2])
-
-ath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 1])
-nonath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 2])
-
-athlete.sampling.estvariance <- ath.sample.variance / ath.sample.size
-nonath.sampling.estvariance <- nonath.sample.variance / nonath.sample.size
-an.sampling.diff.estvariance <- ath.sampling.estvariance + nonath.sampling.estvariance
-an.sampling.diff.estse <- sqrt(an.sampling.diff.estvariance)
-```
-
-### 1. Calculate sample difference between means:
-
-```{r}
 ath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 1])
 nonath.sample.mean <- mean(am.df$Anger.In[am.df$Sports == 2])
 an.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
@@ -158,7 +153,27 @@ an.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
 
 $\bar{x}_{AIa} - \bar{x}_{AIn}$ = `r an.sample.mean.diff`
 
+Visualize distributions:
+
+```{r q25-boxplot}
+list.q25 <- list(
+  Athletes = am.df$Anger.In[am.df$Sports == 1], 
+  "Non-Athletes" = am.df$Anger.In[am.df$Sports != 1])
+
+boxplot(list.q25, main = "Anger In Scores, Type 7")
+```
+
 ### 2. Estimate the standard error of the difference between means:
+
+```{r q25-estse}
+ath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 1])
+nonath.sample.variance <- var(am.df$Anger.In[am.df$Sports == 2])
+
+ath.sampling.estvariance <- ath.sample.variance / ath.sample.size
+nonath.sampling.estvariance <- nonath.sample.variance / nonath.sample.size
+an.sampling.diff.estvariance <- ath.sampling.estvariance + nonath.sampling.estvariance
+an.sampling.diff.estse <- sqrt(an.sampling.diff.estvariance)
+```
 
 Because these samples do *not* have the same sample size, rather than use the **MSE** formula from the text, we will estimate the standard error of the difference in means using the **variance sum law**:
 
@@ -174,19 +189,19 @@ $s_{\bar{x}_{AIa} - \bar{x}_{AIn}} =$ `r an.sampling.diff.estse`
 
 ### 3. Find t critical value:
 
-```{r}
-df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
+```{r q25-ci}
+an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
 Y.95 <- 0.95
-t.95 <- qt((1 - Y.95)/2, df = df, lower.tail = FALSE)
+t.95 <- qt((1 - Y.95)/2, df = an.df, lower.tail = FALSE)
 
 LL <- ath.sample.mean - nonath.sample.mean - (t.95 * an.sampling.diff.estse)
 UL <- ath.sample.mean - nonath.sample.mean + (t.95 * an.sampling.diff.estse)
 
 ```
 
-Degrees of Freedom = $(n_{AIa} - 1) + (n_{AIn} - 1)$ = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r df`
+Degrees of Freedom = $(n_{AIa} - 1) + (n_{AIn} - 1)$ = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r an.df`
 
-99% t Critical Value= `r t.95`
+95% t Critical Value= `r t.95`
 
 ### 4. Calculate confidence interval:
 
@@ -202,15 +217,15 @@ Lower Limit = `r ath.sample.mean` - `r nonath.sample.mean` + (`r t.95`)(`r an.sa
 
 Upper Limit = `r UL`
 
-99% Confidence Level:
+95% Confidence Level:
 
-`r LL` $\leq \mu_{AIn} - \mu_{AIa} \geq$ `r UL`
+`r LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r UL`
 
 ### Solution
 
-Based on a 99% confidence interval on the difference between geneder means, we cannot infer a significant difference between the amount that males and females use agressive behavior to improve an angry mood.
+Based on a 95% confidence interval on the difference between athlete and non-athlete means, we can infer a significant difference between the extent to which athletes and non-athletes supress their anger, as the data demonstrates that non-athletes supress their anger more than athletes.
 
-99% Confidence Interval on the difference between gender means:
+95% Confidence Interval on the difference between athletes and non-athletes:
 
-`r LL` $\leq \mu_{AIn} - \mu_{AIa} \geq$ `r UL`
+`r LL` $\leq \mu_{AIa} - \mu_{AIn} \geq$ `r UL`
 
