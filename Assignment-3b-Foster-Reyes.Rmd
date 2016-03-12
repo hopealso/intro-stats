@@ -347,3 +347,22 @@ Upper Limit = `r aoco.p.UL`
 95% Confidence Level:
 
 `r aoco.p.LL` $\leq \rho \geq$ `r aoco.p.UL`
+
+## Chapter 11, Q20
+
+False
+
+## Chapter 11, Q21
+!!!XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+## Chapter 11, Q22
+
+True
+
+## Chapter 11, Q23
+
+True
+
+## Chapter 11, Q24
+
+True
