@@ -59,9 +59,13 @@ female.sample.mean <- mean(am.df$Anger.Out[am.df$Gender == 2])
 mf.sample.mean.diff <-  male.sample.mean - female.sample.mean
 ```
 
+$\bar{x}_{AOm}$ = `r male.sample.mean`
+
+$\bar{x}_{AOf}$ = `r female.sample.mean`
+
 $\bar{x}_{AOm} - \bar{x}_{AOf}$ = `r mf.sample.mean.diff`
 
-Visualize distributions:
+#### Visualize distributions:
 
 ```{r q24-boxplot}
 list.q24 <- list(
@@ -74,15 +78,6 @@ boxplot(list.q24, main = "Anger Out Scores, Type 7")
 ### 2. Estimate the standard error of the difference between means:
 
 ```{r q24-estse}
-# 1st try: estimate standard error of the difference between means using variance sum law
-#male.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 1])
-#female.sample.variance <- var(am.df$Anger.Out[am.df$Gender == 2])
-
-#male.sampling.estvariance <- male.sample.variance / male.sample.size
-#female.sampling.estvariance <- female.sample.variance / female.sample.size
-#mf.sampling.diff.estvariance <- male.sampling.estvariance + female.sampling.estvariance
-#mf.sampling.diff.estse <- sqrt(mf.sampling.diff.estvariance)
-
 m.SS <- sum((am.df$Anger.Out[am.df$Gender == 1] - male.sample.mean)^2)
 f.SS <- sum((am.df$Anger.Out[am.df$Gender == 2] - female.sample.mean)^2)
 mf.SSE <- m.SS + f.SS
@@ -95,7 +90,27 @@ mf.sampling.diff.estse <- sqrt(2* mf.MSE / mf.hmean)
 ```
 
 
-$s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 =$
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{\frac{2MSE}{n_h}}$
+
+$MSE = \frac{SSE}{df}$
+
+$SSE = \sum_{i}^{n} (x_{Aom_{i}} - \bar{x}_{AOm})^2 + \sum_{i}^{n} (x_{AOf_i} - \bar{x}_{AOf})^2$
+
+$SSE = \sum_{i}^{`r male.sample.size`}(x_{Aom_{i}} - `r male.sample.mean`)^2 +
+  \sum_{i}^{`r female.sample.size`}(x_{AOf_i} - `r female.sample.mean`)^2$
+  
+$SSE = `r mf.SSE`$
+
+$df = (n_{AOm} - 1) + (n_{AOf} - 1) = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r mf.df`$
+
+$MSE = \frac{SSE}{df} = \frac{`r mf.SSE`}{`r mf.df`} = `r mf.MSE`$
+
+$n_h = \frac{2}{(\frac{1}{n_{AOm}} + \frac{1}{n_{AOf}})} = \frac{2}{(\frac{1}{`r male.sample.size`} +
+  \frac{1}{`r female.sample.size`})} = `r mf.hmean`$
+
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{\frac{2MSE}{n_h}}$
+
+$s_{\bar{x}_{AOm} - \bar{x}_{AOf}} = \sqrt{\frac{(2)(`r mf.MSE`)}{`r mf.hmean`}} = `r mf.sampling.diff.estse`$
 
 ### 3. Find t critical value:
 
@@ -103,14 +118,13 @@ $s_{\bar{x}_{AOm} - \bar{x}_{AOf}}^2 =$
 Y.99 <- 0.99
 t.99 <- qt((1 - Y.99)/2, df = mf.df, lower.tail = FALSE)
 
-LL <- male.sample.mean - female.sample.mean - (t.99 * mf.sampling.diff.estse)
-UL <- male.sample.mean - female.sample.mean + (t.99 * mf.sampling.diff.estse)
-
+mf.LL <- male.sample.mean - female.sample.mean - (t.99 * mf.sampling.diff.estse)
+mf.UL <- male.sample.mean - female.sample.mean + (t.99 * mf.sampling.diff.estse)
 ```
 
-Degrees of Freedom = $(n_{AOm} - 1) + (n_{AOf} - 1)$ = (`r male.sample.size` - 1) + (`r female.sample.size` - 1) = `r mf.df`
+Degrees of Freedom = `r mf.df`
 
-99% t Critical Value= `r t.99`
+99% t Critical Value = `r t.99`
 
 ### 4. Calculate confidence interval:
 
@@ -118,17 +132,17 @@ Lower Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} - (t.99)(s_{\bar{x}_{AOm} - \bar{x}
 
 Lower Limit = `r male.sample.mean` - `r female.sample.mean` - (`r t.99`)(`r mf.sampling.diff.estse`)
 
-Lower Limit = `r LL`
+Lower Limit = `r mf.LL`
 
 Upper Limit = $\bar{x}_{AOm} - \bar{x}_{AOf} + (t.99)(s_{\bar{x}_{AOm} - \bar{x}_{AOf}})$
 
 Lower Limit = `r male.sample.mean` - `r female.sample.mean` + (`r t.99`)(`r mf.sampling.diff.estse`)
 
-Upper Limit = `r UL`
+Upper Limit = `r mf.UL`
 
 99% Confidence Level:
 
-`r LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r UL`
+`r mf.LL` $\leq \mu_{Aom} - \mu_{AOf} \geq$ `r mf.UL`
 
 ### Solution
 
