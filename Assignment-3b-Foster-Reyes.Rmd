@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 3b"
 author: "Hope Foster-Reyes"
 date: "March 10, 2016"
-output: html_document
+output: pdf_document
 header-includes: \usepackage{amsmath}
 ---
 
@@ -519,14 +519,14 @@ sample.mean.ao <- mean(am.df$Anger.Out)
 aiao.df <- data.frame(Anger.In = am.df$Anger.In, Anger.Out = am.df$Anger.Out, AIAO.diff = (am.df$Anger.In - am.df$Anger.Out))
 head(aiao.df)
 
-aiao.sample.mean.diff <- mean(aiao.df$AIAO.diff)
+aiao.sample.mean <- mean(aiao.df$AIAO.diff)
 ```
 
 $\bar{x}_{AI}$ = `r sample.mean.ai`
 
 $\bar{x}_{AO}$ = `r sample.mean.ao`
 
-$\bar{x}_{AI-AO}$ = `r aiao.sample.mean.diff`
+$\bar{x}_{AI-AO}$ = `r aiao.sample.mean`
 
 #### Visualize distributions:
 
@@ -574,16 +574,10 @@ plot(am.df$Anger.In, am.df$Anger.Out)
 
 ### 4. Estimate the standard error of the difference between means in the sampling distribution.
 
-Because we do not know the variance of the values in the population, we will use the variance within our sample to estimate the standard error in the sampling distribution.
+Because we do not know the variance of the difference in the population, we will use the variance within our sample to estimate the standard error in the sampling distribution.
 
 ```{r q22-estse}
-ath.SS <- sum((am.df$Control.In[am.df$Sports == 1] - ath.sample.mean)^2)
-nonath.SS <- sum((am.df$Control.In[am.df$Sports == 2] - nonath.sample.mean)^2)
-an.SSE <- ath.SS + nonath.SS
-
-an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
-an.MSE <- an.SSE / an.df
-an.hmean <- 2 / (1/ath.sample.size + 1/nonath.sample.size)
-
-an.sampling.diff.estse <- sqrt(2* an.MSE / an.hmean)
+aiao.sampling.estse <- sd(aiao.df$AIAO.diff)
 ```
+
+$s_{\bar{x}_{AI-AO}} = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \overline{x})^2} = `r aiao.sampling.estse`$
