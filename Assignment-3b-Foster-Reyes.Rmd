@@ -10,6 +10,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+\usepackage{amsmath} 
+
 ## Prepare Environment
 
 Load libraries.
@@ -18,7 +20,6 @@ Load libraries.
 library(xlsx)
 library(MKmisc)
 ```
-
 
 Download data from online Url to subdirectory local to this RStudio project.
 
@@ -348,21 +349,157 @@ Upper Limit = `r aoco.p.UL`
 
 `r aoco.p.LL` $\leq \rho \geq$ `r aoco.p.UL`
 
-## Chapter 11, Q20
+## Chapter 11, Q20.
 
 False
 
-## Chapter 11, Q21
+## Chapter 11, Q21.
 !!!XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-## Chapter 11, Q22
+## Chapter 11, Q22.
 
 True
 
-## Chapter 11, Q23
+## Chapter 11, Q23.
 
 True
 
-## Chapter 11, Q24
+## Chapter 11, Q24.
 
 True
+
+## Chapter 12, Q21.
+
+In this exercise we are testing the difference in means of a single variable, Control-In, between two independent groups, athletes and non-athletes.
+
+### 1. Calculate sample statistic, the difference between sample means.
+
+```{r q21-mean}
+ath.sample.mean <- mean(am.df$Control.In[am.df$Sports == 1])
+nonath.sample.mean <- mean(am.df$Control.In[am.df$Sports == 2])
+an.sample.mean.diff <-  ath.sample.mean - nonath.sample.mean
+```
+
+$\bar{x}_{CIa}$ = `r ath.sample.mean`
+
+$\bar{x}_{CIn}$ = `r nonath.sample.mean`
+
+$\bar{x}_{CIa} - \bar{x}_{CIn}$ = `r an.sample.mean.diff`
+
+Visualize distributions:
+
+```{r q21-boxplot}
+list.q21 <- list(
+  Athletes = am.df$Control.In[am.df$Sports == 1], 
+  "Non-Athletes" = am.df$Control.In[am.df$Sports != 1])
+
+boxplot(list.q21, main = "Control In Scores, Type 7")
+```
+
+### 2. Establish null hypothesis.
+
+$H_0: \mu_{CIa} = \mu_{CIn}$
+
+$H_0: \mu_{CIa} - \mu_{CIn} = 0$
+
+$H_A: \mu_{CIa} \neq \mu_{CIn}$
+
+Where $\mu_{CIa}$ is the mean of Control-In scores for the population of athletes, and $\mu_{CIn}$ is the mean of Control-In scores for the population of non-athletes.
+
+That is, our null hypothesis is that within the population of athletes and non-athletes, there is no difference in the extent to which the two groups control angry feelings by calming down or cooling off.
+
+Our alternative hypothesis is that there is some difference between the two.
+
+To test the likelihood of the null hypothesis we will test whether, if we assume there is no difference between athletes' and non-athletes' Control-In scores in the population, would the difference found in our samples for each group be likely, or unlikely?
+
+* If the difference in our samples is found to be likely, we will fail to reject the null hypothesis, and consider our sample data to be insufficient to demonstrate a statistically significant difference.
+
+* If the differece in our samples is found to be unlikely, we will reject the null hypothesis, and accept a statistically significant difference between two groups.
+
+This is a two tailed test.
+
+### 3. Assumptions
+
+We make the following assumptions in our analysis:
+
+1. The two populations, athletes and non-athletes, have the same variance.
+
+2. The Control-In variables in the athlete and non-athlete populations are normally distributed.
+
+3. Each Control-In value is sampled independently from each other value.
+
+### 4. Estimate the standard error of the difference between means in the sampling distribution.
+
+Because we do not know the variance of the Control.In values in the populations, we will use the variance within our samples to estimate the standard error in the sampling distribution.
+
+```{r q21-estse}
+ath.SS <- sum((am.df$Control.In[am.df$Sports == 1] - ath.sample.mean)^2)
+nonath.SS <- sum((am.df$Control.In[am.df$Sports == 2] - nonath.sample.mean)^2)
+an.SSE <- ath.SS + nonath.SS
+
+an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
+an.MSE <- an.SSE / an.df
+an.hmean <- 2 / (1/ath.sample.size + 1/nonath.sample.size)
+
+an.sampling.diff.estse <- sqrt(2* an.MSE / an.hmean)
+```
+
+$s_{\bar{x}_{CIa} - \bar{x}_{CIn}} = \sqrt{\frac{2MSE}{n_h}}$
+
+$MSE = \frac{SSE}{df}$
+
+$SSE = \sum_{i}^{n} (x_{Aom_{i}} - \bar{x}_{CIa})^2 + \sum_{i}^{n} (x_{AOf_i} - \bar{x}_{CIn})^2$
+
+$SSE = \sum_{i}^{`r ath.sample.size`}(x_{CIa_{i}} - `r ath.sample.mean`)^2 +
+  \sum_{i}^{`r nonath.sample.size`}(x_{CIn_i} - `r nonath.sample.mean`)^2$
+  
+$SSE = `r an.SSE`$
+
+$df = (n_{CIa} - 1) + (n_{CIn} - 1) = (`r ath.sample.size` - 1) + (`r nonath.sample.size` - 1) = `r an.df`$
+
+$MSE = \frac{SSE}{df} = \frac{`r an.SSE`}{`r an.df`} = `r an.MSE`$
+
+$n_h = \frac{2}{(\frac{1}{n_{CIa}} + \frac{1}{n_{CIn}})} = \frac{2}{(\frac{1}{`r ath.sample.size`} +
+  \frac{1}{`r nonath.sample.size`})} = `r an.hmean`$
+
+$s_{\bar{x}_{CIa} - \bar{x}_{CIn}} = \sqrt{\frac{2MSE}{n_h}}$
+
+$s_{\bar{x}_{CIa} - \bar{x}_{CIn}} = \sqrt{\frac{(2)(`r an.MSE`)}{`r an.hmean`}} = `r an.sampling.diff.estse`$
+
+### 5. Compute t for the difference of sample means.
+
+```{r q21-t}
+an.t <- an.sample.mean.diff / an.sampling.diff.estse
+```
+
+$t = \frac{statistic - \text{hypothesized value}}{\text{standard error of the statistic}}$
+
+$t = \frac{(\bar{x}_{CIa} - \bar{x}_{CIn}) - (\mu_{CIa} - \mu_{CIn})}{s_{\bar{x}_{CIa} - \bar{x}_{CIn}}}$
+
+$t = \frac{`r an.sample.mean.diff` - 0}{`r an.sampling.diff.estse`} = `r an.t`$
+
+### 6. Compute the probability of a t in a two-tailed test.
+
+```{r q21-p}
+an.p <- 2 * pt(an.t, df = 76, lower.tail = FALSE)
+```
+
+What is the probability of getting a t as large or larger or as small or smaller in our sampling distribution?
+
+Degrees of Freedom = `r an.df`
+
+$P(t < -`r an.t` \; or \; t > `r an.t`) = `r an.p`$
+
+### Analysis
+
+Our goal was to determine if there is a difference between the extent to which athletes and non-athletes control angry feelings by calming down or cooling off.
+
+We found that, if we assume there is no difference between athletes' and non-athletes' Control-In scores in the population, the probability of a difference of `r an.sample.mean.diff` found between our samples for each group was `r an.p`.
+
+Therefore, based on a 0.01 significance level, we reject the null hypothesis that $\mu_{CIa} = \mu_{CIn}$, and find statistically significant evidence that $\mu_{CIa} \neq \mu_{CIn}$. 
+
+That is, we conclude based on a 0.01 significance level that there is a difference between the extent to which athletes and non-athletes control angry feelings by calming down or cooling off.
+
+## Chapter 12, Q22.
+
+
