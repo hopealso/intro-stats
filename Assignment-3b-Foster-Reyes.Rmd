@@ -3,14 +3,13 @@ title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 3b"
 author: "Hope Foster-Reyes"
 date: "March 10, 2016"
 output: html_document
+header-includes: \usepackage{amsmath}
 ---
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-\usepackage{amsmath} 
 
 ## Prepare Environment
 
@@ -502,4 +501,89 @@ That is, we conclude based on a 0.01 significance level that there is a differen
 
 ## Chapter 12, Q22.
 
+In this exercise we are testing the difference in means of two variables, Anger-Out and Anger-In, within a single group, the population.
 
+### 1. Calculate sample statistic, the mean difference between the two variables.
+
+Compute the difference between variables for each subject.
+
+An excerpt from the sample values:
+
+```{r q22-mean}
+sample.size <- nrow(am.df)
+
+sample.mean.ai <- mean(am.df$Anger.In)
+sample.mean.ao <- mean(am.df$Anger.Out)
+#aoai.sample.mean.diff <-  sample.mean.ai - sample.mean.ao
+
+aiao.df <- data.frame(Anger.In = am.df$Anger.In, Anger.Out = am.df$Anger.Out, AIAO.diff = (am.df$Anger.In - am.df$Anger.Out))
+head(aiao.df)
+
+aiao.sample.mean.diff <- mean(aiao.df$AIAO.diff)
+```
+
+$\bar{x}_{AI}$ = `r sample.mean.ai`
+
+$\bar{x}_{AO}$ = `r sample.mean.ao`
+
+$\bar{x}_{AI-AO}$ = `r aiao.sample.mean.diff`
+
+#### Visualize distributions:
+
+```{r q22-boxplot}
+list.q22 <- list(
+  "Anger-Out" = am.df$Anger.Out, 
+  "Anger-In" = am.df$Anger.Out)
+
+boxplot(list.q22, main = "Anger-Out and Anger-In Scores, Type 7")
+```
+
+### 2. Establish null hypothesis.
+
+$H_0: \mu_{AI-AO} = 0$
+
+$H_A: \mu_{AI-AO} > 0$
+
+Where $\mu_{AI-AO}$ is the difference between the Anger-In and Anger-Out scores in the population.
+
+That is, our null hypothesis is that within the population, there is no difference between the extent to which people deal with anger by expressing it in a verbally or physically aggressive fashion and the extent to which people experience anger but do not express it (suppress their anger).
+
+Our alternative hypothesis is that there is some difference between the two, and further that people experience anger but do not express it (suppress their anger) to a *greater* extent than they deal with anger by expressing it in a verbally or physically aggressive fashion.
+
+To test the likelihood of the null hypothesis we will test whether, if we assume there is no difference between Anger-In and Anger-Out scores in the population, would the difference found in our samples for each variable be likely, or unlikely?
+
+* If the difference in our samples is found to be likely, we will fail to reject the null hypothesis, and consider our sample data to be insufficient to demonstrate a statistically significant difference.
+
+* If the differece in our samples is found to be unlikely, we will reject the null hypothesis, and accept a statistically significant difference between the two variables in the population.
+
+This is a one-tailed test.
+
+### 3. Assumptions
+
+We make the following assumptions in our analysis:
+
+1. The diference between Anger-In and Anger-Out in the population is normally distributed.
+
+Because both the Anger-In and Anger-Out variables are collected from the same group in our sample, we do not assume that these values are sampled independently from eachother, and we therefore perform a correlated test.
+
+#### Visualize correlation:
+
+```{r 12-q22-boxplot}
+plot(am.df$Anger.In, am.df$Anger.Out)
+```
+
+### 4. Estimate the standard error of the difference between means in the sampling distribution.
+
+Because we do not know the variance of the values in the population, we will use the variance within our sample to estimate the standard error in the sampling distribution.
+
+```{r q22-estse}
+ath.SS <- sum((am.df$Control.In[am.df$Sports == 1] - ath.sample.mean)^2)
+nonath.SS <- sum((am.df$Control.In[am.df$Sports == 2] - nonath.sample.mean)^2)
+an.SSE <- ath.SS + nonath.SS
+
+an.df <- (ath.sample.size - 1) + (nonath.sample.size - 1)
+an.MSE <- an.SSE / an.df
+an.hmean <- 2 / (1/ath.sample.size + 1/nonath.sample.size)
+
+an.sampling.diff.estse <- sqrt(2* an.MSE / an.hmean)
+```
