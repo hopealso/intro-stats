@@ -491,7 +491,7 @@ $P(t < -`r an.t` \; or \; t > `r an.t`) = `r an.p`$
 
 ### Analysis
 
-Our goal was to determine if there is a difference between the extent to which athletes and non-athletes control angry feelings by calming down or cooling off.
+Our goal was to determine if there is a difference between the extent to which athletes and non-athletes control angry feelings by calming down or cooling off, as defined by Control-In scores on a an Angry Mood Improvement Inventory based on the tate-Trait Anger Expression Inventory (STAXI-2).
 
 We found that, if we assume there is no difference between athletes' and non-athletes' Control-In scores in the population, the probability of a difference of `r an.sample.mean.diff` found between our samples for each group was `r an.p`.
 
@@ -572,12 +572,49 @@ Because both the Anger-In and Anger-Out variables are collected from the same gr
 plot(am.df$Anger.In, am.df$Anger.Out)
 ```
 
-### 4. Estimate the standard error of the difference between means in the sampling distribution.
+### 4. Estimate the standard error of the difference between variables in the sampling distribution.
 
 Because we do not know the variance of the difference in the population, we will use the variance within our sample to estimate the standard error in the sampling distribution.
 
 ```{r q22-estse}
-aiao.sampling.estse <- sd(aiao.df$AIAO.diff)
+aiao.sampling.estse <- sd(aiao.df$AIAO.diff) / sqrt(sample.size)
 ```
 
-$s_{\bar{x}_{AI-AO}} = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \overline{x})^2} = `r aiao.sampling.estse`$
+$s_{\bar{x}_{AI-AO}} = \frac{s_{AI-AO}}{\sqrt{n}} = `r aiao.sampling.estse`$
+
+### 5. Compute t for the difference of sample means.
+
+```{r q22-t}
+aiao.t <- aiao.sample.mean / aiao.sampling.estse
+```
+
+$t = \frac{statistic - \text{hypothesized value}}{\text{standard error of the statistic}}$
+
+$t = \frac{\bar{x}_{AI-AO} - \mu_{AI-AO}}{s_{\bar{x}_{AI-AO}}}$
+
+$t = \frac{`r aiao.sample.mean` - 0}{`r aiao.sampling.estse`} = `r aiao.t`$
+
+### 6. Compute the probability of a t in a one-tailed test.
+
+```{r q22-p}
+#an.p <- 2 * pt(an.t, df = 76, lower.tail = FALSE)
+
+aiao.df <- sample.size - 1
+aiao.p <- pt(aiao.t, df = aiao.df, lower.tail = FALSE)
+```
+
+What is the probability of getting a t as large or larger in our sampling distribution?
+
+Degrees of Freedom = `r aiao.df`
+
+$P(t > `r aiao.t`) = `r format(round(aiao.p, 6), scientific = FALSE)`$
+
+### Analysis
+
+Our goal was to determine if there is a difference between the extent to which people deal with anger by expressing it in a verbally or physically aggressive fashion and the extent to which people experience anger but do not express it (suppress their anger), as defined as Anger-In and Anger-Out scores, respectively, on a an Angry Mood Improvement Inventory based on the tate-Trait Anger Expression Inventory (STAXI-2).
+
+We found that, if we assume there is no difference between Anger-In and Anger-Out scores in the population, the probability of a difference of `r aiao.sample.mean` found between our samples for each group was `r format(round(aiao.p, 6), scientific = FALSE)`.
+
+Therefore, based on a 0.01 significance level, we reject the null hypothesis that $\mu_{AI-AO} = 0$, and find statistically significant evidence that $\mu_{AI-AO} > 0$. 
+
+That is, we conclude based on a 0.01 significance level that there is some difference between the two, and further that people experience anger but do not express it (suppress their anger) to a *greater* extent than they deal with anger by expressing it in a verbally or physically aggressive fashion.
