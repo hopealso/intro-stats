@@ -353,7 +353,7 @@ Upper Limit = `r aoco.p.UL`
 False
 
 ## Chapter 11, Q21.
-!!!XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+False
 
 ## Chapter 11, Q22.
 
@@ -447,7 +447,7 @@ $s_{\bar{x}_{CIa} - \bar{x}_{CIn}} = \sqrt{\frac{2MSE}{n_h}}$
 
 $MSE = \frac{SSE}{df}$
 
-$SSE = \sum_{i}^{n} (x_{Aom_{i}} - \bar{x}_{CIa})^2 + \sum_{i}^{n} (x_{AOf_i} - \bar{x}_{CIn})^2$
+$SSE = \sum_{i}^{n} (x_{CIa_{i}} - \bar{x}_{CIa})^2 + \sum_{i}^{n} (x_{CIn_i} - \bar{x}_{CIn})^2$
 
 $SSE = \sum_{i}^{`r ath.sample.size`}(x_{CIa_{i}} - `r ath.sample.mean`)^2 +
   \sum_{i}^{`r nonath.sample.size`}(x_{CIn_i} - `r nonath.sample.mean`)^2$
