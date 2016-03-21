@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 4"
 author: "Hope Foster-Reyes"
 date: "March 26, 2016"
-output: pdf_document
+output: html_document
 header-includes: \usepackage{amsmath}
 ---
 
@@ -13,7 +13,65 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Chapter 14, Q2.
 
+```{r q2}
+y.predicted <- function (x, b, a) {
+  return((b * x) + a)
+}
 
+x.predictor <- function (y, b, a) {
+  return((y - a) / b)
+}
+
+q2.a <- y.predicted(6, 2, 9)
+
+q2.b <- x.predictor(14, 2, 9)
+```
+
+Y' = bX + A
+
+Y' = 2X + 9
+
+### a.
+
+X = 6
+
+Y' = 2X + 9
+
+Y' = (2)6 + 9 = `r q2.a`
+
+### b.
+
+Y' = 14
+
+Y' = 2X + 9
+
+2X = y' - 9
+
+X = (14 - 9)/2 = `r q2.b`
+
+## Chapter 14, Q4.
+
+The standard error of the estimate measures the accuracy of predictions of a linear regression. It is the standard deviation of the errors of prediction.
+
+If:
+
+$x$ = criterion variable
+
+$y$ = predictor variable (actual)
+
+$\hat{y}$ = predicted value
+
+$N$ = size of the population
+
+Then the standard error of the estimate (SEE) for a population can be calculated as follows:
+
+SSE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
+
+## Chapter 14, Q6.
+
+## Chapter 14, Q8.
+
+## Chapter 14, Q10.
 
 ## Prepare Environment
 
