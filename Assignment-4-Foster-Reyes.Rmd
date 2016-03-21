@@ -9,6 +9,8 @@ header-includes: \usepackage{amsmath}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(reshape2)
+library(ggplot2)
 ```
 
 ## Chapter 14, Q2.
@@ -72,6 +74,22 @@ SSE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
 ## Chapter 14, Q8.
 
 ## Chapter 14, Q10.
+
+```{r}
+x.pre <- c(59,52,44,51,42,42,41,45,27,63,54,44,50,47,55,49,45,57,46,60,65,64,50,74,59)
+y.post <- c(56,63,55,50,66,48,58,36,13,50,81,56,64,50,63,57,73,63,46,60,47,73,58,85,44)
+
+cor.prepost <- cor(x.pre, y.post, method = "pearson")
+b.post <- cor.prepost * (sd(y.post) / sd(x.pre))
+a.post <- mean(y.post) - b.post * mean(x.pre)
+
+post.regression <- data.frame(x.pre, y.post, 
+                              b.post * x.pre + a.post)
+colnames(post.regression) <- c("pre", "post", "predicted")
+
+plot(post.regression$pre, post.regression$post, col = "blue")
+points(post.regression$pre, post.regression$predicted, col = "red")
+```
 
 ## Prepare Environment
 
