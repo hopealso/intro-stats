@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 4"
 author: "Hope Foster-Reyes"
 date: "March 26, 2016"
-output: pdf_document
+output: html_document
 header-includes: \usepackage{amsmath}
 ---
 
@@ -75,11 +75,18 @@ SEE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
 
 ## Chapter 14, Q10.
 
-```{r}
+```{r q10}
 x.pre <- c(59,52,44,51,42,42,41,45,27,63,54,44,50,47,55,49,45,57,46,60,65,64,50,74,59)
 y.post <- c(56,63,55,50,66,48,58,36,13,50,81,56,64,50,63,57,73,63,46,60,47,73,58,85,44)
+pre.mean <- mean(x.pre)
+post.mean <- mean(y.post)
+pre.deviation <- x.pre - pre.mean
+post.deviation <- y.post - post.mean
 
 cor.prepost <- cor(x.pre, y.post, method = "pearson")
+cor.prepost.manual <- sum(pre.deviation * post.deviation) / 
+  sqrt(sum(pre.deviation^2) * sum(post.deviation^2))
+  
 b.post <- cor.prepost * (sd(y.post) / sd(x.pre))
 a.post <- mean(y.post) - b.post * mean(x.pre)
 
@@ -94,13 +101,23 @@ $\hat{y} = bx + a$
 
 $x = 43$
 
+$b = r_{xy} \frac{\sigma_{y}}{\sigma_{x}}$
+
+$r_{xy} = \frac{\sum (x - \bar{x})(y - \bar{y})}{\sqrt{\sum (x - \bar{x})^2(y - \bar{y})^2}}$
+
+$r_{xy} = `r cor.prepost`$
+
+$b = r_{xy} \frac{\sigma_{y}}{\sigma_{x}} = (`r cor.prepost`)\frac{`r sd(y.post)`}{`r sd(x.pre)`} = `r b.post`$ 
+
+$a = \bar{y} - b\bar{x} = `r post.mean` - (`r b.post`)`r pre.mean` = `r a.post`$
+
 $\hat{y} = (`r b.post`)43 + `r a.post`$
 
 $\hat{y} = `r q10`$
 
 Plot regression, calculated manually:
 
-```{r}
+```{r q10-test}
 plot(post.regression$pre, post.regression$post, col = "blue", main = "Manual Linear Regression")
 points(post.regression$pre, post.regression$predicted, col = "red")
 
@@ -117,6 +134,35 @@ $\bar{x} = 10$
 $\bar{y} = 12$
 
 $\sigma_{x} = 2.5$
+
+$\sigma_{y} = 3.0$
+
+$r_{xy} = -0.6$
+
+```{r q12}
+x.mean <- 10
+y.mean <- 12
+x.sd <- 2.5
+y.sd <- 3.0
+r.xy <- -0.6
+
+b.q12 <- r.xy * y.sd / x.sd
+a.q12 <- y.mean - b.q12 * x.mean
+```
+
+$b = r_{xy} \frac{\sigma_{y}}{\sigma_{x}} = (`r r.xy`)\frac{`r y.sd`}{`r x.sd`} = `r b.q12`$ 
+
+$a = \bar{y} - b\bar{x} = `r y.mean` - (`r b.q12`)`r x.mean` = `r a.q12`$
+
+Regression line predicting y from x:
+
+$\hat{y} = `r b.q12`x + `r a.q12`$
+
+## Chapter 14, Q14.
+
+## Chapter 14, Q16.
+
+## Chapter 14, Q18.
 
 ## Prepare Environment
 
