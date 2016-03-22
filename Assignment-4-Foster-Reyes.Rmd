@@ -71,6 +71,32 @@ SEE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
 
 ## Chapter 14, Q6.
 
+```{r q6}
+#q6.x <- c(2,4,4,5,6)
+#q6.y <- c(5,6,7,11,12)
+
+q6.x <- c(1,2,3,4,5)
+q6.y <- c(1,2,1.3,3.75,2.25)
+q6.x.mean <- mean(q6.x)
+q6.y.mean <- mean(q6.y)
+x.deviation <- q6.x - q6.x.mean
+y.deviation <- q6.y - q6.y.mean
+
+cor.xy <- cor(q6.x, q6.y, method = "pearson")
+cor.prepost.manual <- sum(x.deviation * y.deviation) / 
+  sqrt(sum(x.deviation^2) * sum(y.deviation^2))
+  
+b.y <- cor.xy * (sd(q6.y) / sd(q6.x))
+a.y <- mean(q6.y) - b.y * mean(q6.x)
+
+q6.data <- data.frame(seq(1, length(q6.x)), q6.x, q6.y, x.deviation, x.deviation^2, y.deviation, y.deviation^2, 
+                      b.y * q6.x + a.y)
+colnames(q6.data) <- c("id", "x", "y", "xdev", "xsqdev", "ydev", "ysqdev", 
+                       "ypredicted")
+
+```
+
+
 ## Chapter 14, Q8.
 
 ## Chapter 14, Q10.
