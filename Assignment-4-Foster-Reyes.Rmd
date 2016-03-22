@@ -71,6 +71,8 @@ SEE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
 
 ## Chapter 14, Q6.
 
+Summarize data:
+
 ```{r q6}
 #q6.x <- c(2,4,4,5,6)
 #q6.y <- c(5,6,7,11,12)
@@ -81,21 +83,56 @@ q6.x.mean <- mean(q6.x)
 q6.y.mean <- mean(q6.y)
 x.deviation <- q6.x - q6.x.mean
 y.deviation <- q6.y - q6.y.mean
+q6.n <- length(q6.x)
 
 cor.xy <- cor(q6.x, q6.y, method = "pearson")
 cor.prepost.manual <- sum(x.deviation * y.deviation) / 
   sqrt(sum(x.deviation^2) * sum(y.deviation^2))
-  
+
+# calculate slope and intercept of simple linear regression  
 b.y <- cor.xy * (sd(q6.y) / sd(q6.x))
 a.y <- mean(q6.y) - b.y * mean(q6.x)
+q6.predicted <- b.y * q6.x + a.y
+q6.residual <- q6.y - q6.predicted
 
-q6.data <- data.frame(seq(1, length(q6.x)), q6.x, q6.y, x.deviation, x.deviation^2, y.deviation, y.deviation^2, 
-                      b.y * q6.x + a.y)
+# collect data points into a data frame
+q6.data <- data.frame(seq(1, q6.n), q6.x, q6.y, x.deviation, x.deviation^2, y.deviation, y.deviation^2, 
+                      q6.predicted, q6.residual, q6.residual^2)
 colnames(q6.data) <- c("id", "x", "y", "xdev", "xsqdev", "ydev", "ysqdev", 
-                       "ypredicted")
+                       "ypredicted", "yresid", "ysqresid")
+
+# display
+q6.data
+round(colSums(q6.data), 3)
+```
+
+### a.
+
+```{r q6-a}
+q6.ssx <- sum(x.deviation^2)
+q6.ssy <- sum(y.deviation^2)
+q6.see <- sqrt(((1 - cor.xy^2) * q6.ssy) / (q6.n - 2))
 
 ```
 
+
+$t = \frac{statistic - \text{hypothesized value}}{\text{standard error of the statistic}}$
+
+Where $b$ is the slope of the regression line predicting $y$ from $x$, and $s_{b}$ is the standard error of $b$:
+
+$t = \frac{b - 0}{s_{b}}$
+
+Where $s_{est}$ is the standard error of the estimate, SSX is the sum of squared deviations of $x$ from $\bar{x}$ and SSY is the sum of squared deviations of $y$ from $\bar{y}$:
+
+$s_{b} = \frac{s_{est}}{\sqrt{SSX}}$
+
+$SSX = \sum (x-\bar{x})^2 = `r q6.ssx`$
+
+$s_{est} = \sqrt{\frac{(1-r^2)SSY}{N - 2}}$
+
+$SSY = \sum (y-\bar{y})^2 = `r q6.ssy`$
+
+$s_{est} = \sqrt{\frac{(1-`r cor.xy`^2)`r q6.ssy`}{`r q6.n` - 2}} = `r q6.see`$
 
 ## Chapter 14, Q8.
 
