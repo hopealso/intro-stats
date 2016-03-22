@@ -2,15 +2,15 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 4"
 author: "Hope Foster-Reyes"
 date: "March 26, 2016"
-output: html_document
+output: pdf_document
 header-includes: \usepackage{amsmath}
 ---
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(reshape2)
-library(ggplot2)
+#library(reshape2)
+#library(ggplot2)
 ```
 
 ## Chapter 14, Q2.
@@ -29,27 +29,27 @@ q2.a <- y.predicted(6, 2, 9)
 q2.b <- x.predictor(14, 2, 9)
 ```
 
-Y' = bX + A
+$\hat{y} = bx + a$
 
-Y' = 2X + 9
+$\hat{y} = 2x + 9$
 
 ### a.
 
-X = 6
+$x = 6$
 
-Y' = 2X + 9
+$\hat{y} = 2x + 9$
 
-Y' = (2)6 + 9 = `r q2.a`
+$\hat{y} = (2)6 + 9 = `r q2.a`$
 
 ### b.
 
-Y' = 14
+$\hat{y} = 14$
 
-Y' = 2X + 9
+$\hat{y} = 2x + 9$
 
-2X = y' - 9
+$2x = \hat{y} - 9$
 
-X = (14 - 9)/2 = `r q2.b`
+$x = (14-9)/2 = `r q2.b`$
 
 ## Chapter 14, Q4.
 
@@ -67,7 +67,7 @@ $N$ = size of the population
 
 Then the standard error of the estimate (SEE) for a population can be calculated as follows:
 
-SSE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
+SEE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
 
 ## Chapter 14, Q6.
 
@@ -83,13 +83,40 @@ cor.prepost <- cor(x.pre, y.post, method = "pearson")
 b.post <- cor.prepost * (sd(y.post) / sd(x.pre))
 a.post <- mean(y.post) - b.post * mean(x.pre)
 
-post.regression <- data.frame(x.pre, y.post, 
+post.regression <- data.frame(seq(1, length(x.pre)), x.pre, y.post, 
                               b.post * x.pre + a.post)
-colnames(post.regression) <- c("pre", "post", "predicted")
+colnames(post.regression) <- c("id", "pre", "post", "predicted")
 
-plot(post.regression$pre, post.regression$post, col = "blue")
-points(post.regression$pre, post.regression$predicted, col = "red")
+q10 <- y.predicted(43, a = a.post, b = b.post)
 ```
+
+$\hat{y} = bx + a$
+
+$x = 43$
+
+$\hat{y} = (`r b.post`)43 + `r a.post`$
+
+$\hat{y} = `r q10`$
+
+Plot regression, calculated manually:
+
+```{r}
+plot(post.regression$pre, post.regression$post, col = "blue", main = "Manual Linear Regression")
+points(post.regression$pre, post.regression$predicted, col = "red")
+
+# Check result using lm()
+post.lm <- lm(post ~ pre, data = post.regression)
+post.coeffs <- coefficients(post.lm)
+q10.test <- y.predicted(43, post.coeffs[2], post.coeffs[1])
+```
+
+## Chapter 14, Q12.
+
+$\bar{x} = 10$
+
+$\bar{y} = 12$
+
+$\sigma_{x} = 2.5$
 
 ## Prepare Environment
 
