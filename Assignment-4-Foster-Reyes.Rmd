@@ -356,17 +356,20 @@ $\hat{y} = `r b.q12`x + `r a.q12`$
 
 ## Chapter 14, Q14.
 
+True
+
 ## Chapter 14, Q16.
+
+False. If r is 0.8, then 64% of the variance is explained.
 
 ## Chapter 14, Q18.
 
-## Prepare Environment
+### Prepare Environment
 
 Load libraries.
 
 ```{r libraries}
 library(xlsx)
-library(MKmisc)
 ```
 
 Download data from online Url to subdirectory local to this RStudio project.
@@ -394,6 +397,76 @@ am.df <- read.xlsx(am.file,
                    header = TRUE,
                    colClasses = rep("integer", 7))
 ```
+
+### Observe scatter plot
+
+```{r q18-plot}
+plot(am.df$Control.Out, am.df$Anger.Out)
+```
+
+### Find regression line for predicting Anger.Out from Control.Out
+
+```{r q18}
+coao.n <- nrow(am.df)
+cor.coao <- cor(am.df$Control.Out, am.df$Anger.Out, method = "pearson")
+
+# calculate slope and intercept of simple linear regression  
+b.ao <- cor.coao * (sd(am.df$Anger.Out) / sd(am.df$Control.Out))
+a.ao <- mean(am.df$Anger.Out) - b.ao * mean(am.df$Control.Out)
+coao.predicted <- b.ao * am.df$Control.Out + a.ao
+coao.residual <- am.df$Anger.Out - coao.predicted
+
+# collect data points into a data frame
+coao.regression <- data.frame(seq(1, coao.n), am.df$Control.Out, am.df$Anger.Out, 
+                              coao.predicted, coao.residual, coao.residual^2)
+colnames(coao.regression) <- c("id", "Control.Out", "Anger.Out", 
+                               "AO.Predicted", "AO.Resid", "AO.SqResid")
+
+# Check result using lm()
+coao.lm <- lm(Anger.Out ~ Control.Out, data = coao.regression)
+coao.coeffs <- coefficients(coao.lm)
+```
+
+$\hat{y}_{AO} = bx_{CO} + a$
+
+### a.
+
+$b = r_{COAO} \frac{\sigma_{AO}}{\sigma_{CO}}$
+
+$r_{COAO} = `r cor.coao`$
+
+$b = r_{COAO} \frac{\sigma_{AO}}{\sigma_{CO}} = (`r cor.coao`)\frac{`r sd(am.df$Anger.Out)`}{`r sd(am.df$Control.Out)`} = `r b.ao`$ 
+
+### b.
+
+$a = \bar{y}_{AO} - b\bar{x}_{CO} = `r mean(am.df$Anger.Out)` - (`r b.ao`)`r mean(am.df$Control.Out)` = `r a.ao`$
+
+Regression line:
+
+$\hat{y}_{AO} = `r b.ao`x_{CO} + `r a.ao`$
+
+### c.
+
+Plot regression, calculated manually:
+
+```{r q18-test}
+plot(coao.regression$Control.Out, coao.regression$Anger.Out, col = "blue", main = "Manual Linear Regression")
+points(coao.regression$Control.Out, coao.regression$AO.Predicted, col = "red")
+```
+
+Plot histogram of residuals.
+
+```{r q18-resid}
+hist(coao.regression$AO.Resid)
+```
+
+The relationship appears to be approximately linear. The errors of prediction appear to be distributed normally. However, further analysis may be necessary to determine if the distribution is homoscedastic as the variance around the regression line does not appear wholly consistent.
+
+### d.
+
+
+
+### e.
 
 ## Chapter 16, Q1.
 
