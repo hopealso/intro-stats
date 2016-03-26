@@ -67,7 +67,11 @@ $N$ = size of the population
 
 Then the standard error of the estimate (SEE) for a population can be calculated as follows:
 
-SEE (population) = $\sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
+$SEE (population) = \sigma_{est} = \sqrt{\frac{\sum {(y - \hat{y})}^2}{N}}$
+
+or
+
+
 
 ## Chapter 14, Q6.
 
