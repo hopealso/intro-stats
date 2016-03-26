@@ -408,11 +408,13 @@ plot(am.df$Control.Out, am.df$Anger.Out)
 
 ```{r q18}
 coao.n <- nrow(am.df)
+co.mean <- mean(am.df$Control.Out)
+ao.mean <- mean(am.df$Anger.Out)
 cor.coao <- cor(am.df$Control.Out, am.df$Anger.Out, method = "pearson")
 
 # calculate slope and intercept of simple linear regression  
 b.ao <- cor.coao * (sd(am.df$Anger.Out) / sd(am.df$Control.Out))
-a.ao <- mean(am.df$Anger.Out) - b.ao * mean(am.df$Control.Out)
+a.ao <- ao.mean - b.ao * co.mean
 coao.predicted <- b.ao * am.df$Control.Out + a.ao
 coao.residual <- am.df$Anger.Out - coao.predicted
 
@@ -439,7 +441,7 @@ $b = r_{COAO} \frac{\sigma_{AO}}{\sigma_{CO}} = (`r cor.coao`)\frac{`r sd(am.df$
 
 ### b.
 
-$a = \bar{y}_{AO} - b\bar{x}_{CO} = `r mean(am.df$Anger.Out)` - (`r b.ao`)`r mean(am.df$Control.Out)` = `r a.ao`$
+$a = \bar{y}_{AO} - b\bar{x}_{CO} = `r ao.mean` - (`r b.ao`)`r co.mean` = `r a.ao`$
 
 Regression line:
 
@@ -464,7 +466,60 @@ The relationship appears to be approximately linear. The errors of prediction ap
 
 ### d.
 
+#### Null hypothesis:
 
+$H_{0}: b = 0$
+
+$H_{A}: b <> 0$
+
+#### Test:
+
+```{r q18-signif}
+coao.ssx <- sum((am.df$Control.Out - co.mean)^2)
+coao.ssy <- sum((am.df$Anger.Out - ao.mean)^2)
+coao.see.r <- sqrt(((1 - cor.coao^2) * coao.ssy) / (coao.n - 2))
+coao.see <- sqrt(sum(coao.regression$AO.SqResid) / (coao.n - 2))
+coao.sd.b <- coao.see / sqrt(coao.ssx)
+
+coao.t <- b.ao / coao.sd.b
+
+coao.p <- 2 * pt(coao.t, df = coao.n - 2, lower.tail = FALSE)
+coao.t.05 <- qt(1 - .05 / 2, df = coao.n - 2)
+```
+
+$t = \frac{statistic - \text{hypothesized value}}{\text{standard error of the statistic}}$
+
+Where $b$ is the slope of the regression line predicting Anger.Out from Control.Out, and $s_{b}$ is the standard error of $b$:
+
+$t = \frac{b - 0}{s_{b}}$
+
+Where $s_{est}$ is the standard error of the estimate, SSX is the sum of squared deviations of Control.Out ($x_{CO}$) from $\bar{x}_{CO}$ and SSY is the sum of squared deviations of Anger.Out ($x_{AO}$) from $\bar{y}_{AO}$:
+
+$s_{b} = \frac{s_{est}}{\sqrt{SSX}}$
+
+$SSX = \sum (x_{CO}-\bar{x}_{CO})^2 = `r coao.ssx`$
+
+$s_{est} = \sqrt{\frac{(1-r^2)SSY}{N - 2}}$
+
+$SSY = \sum (y_{AO}-\bar{y}_{AO})^2 = `r coao.ssy`$
+
+$s_{est} = \sqrt{\frac{(1-`r cor.coao`^2)`r coao.ssy`}{`r coao.n` - 2}} = `r coao.see`$
+
+$s_{b} = \frac{s_{est}}{\sqrt{SSX}} = \frac{`r coao.see`}{\sqrt{`r coao.ssx`}} = `r coao.sd.b`$
+
+$t = \frac{b - 0}{s_{b}} = \frac{`r b.ao`}{`r coao.sd.b`} = `r coao.t`$
+
+What is the probability of getting a t as large or larger or as small or smaller in our sampling distribution?
+
+Degrees of Freedom = `r coao.n - 2`
+
+$P(t < -`r coao.t` \; or \; t > `r coao.t`) = `r coao.p`$
+
+Alternately, what are the t critical values for a two-tailed test of alpha = 0.5 and df = `r coao.n - 2`?
+
+$`r -coao.t.05`, `r coao.t.05`$
+
+We reject the null hypothesis; the slope is significantly different from 0 within 95% confidence.
 
 ### e.
 
