@@ -27,7 +27,15 @@ Within an ANOVA test, the symbol N may be used to denote the the total number of
 
 ## Chapter 15, Q7.
 
+The central limit theorem allows us to estimate the population variance as the sample size (n) multiplied by the sampling distribution of the mean. 
+
+When calculating MSB, we are estimating the population variance. 
+
+We can then calculate MSE (our estimate of the population variance) as the sample size (n) multiplied by the the variance of the sample means (our estimate of the sampling distribution of the mean).
+
 ## Chapter 15, Q9.
+
+MSE and MSB measure the same quantity, the population variance, when the population means for all groups are the same.
 
 ## Chapter 15, Q11.
 

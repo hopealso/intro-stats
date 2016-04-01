@@ -39,10 +39,7 @@ if (!file.exists(am.file)) {
 Import data.
 
 ```{r import-data}
-sl.raw <- read.xlsx(am.file, 
-                     sheetName = "Sheet1", 
-                     header = TRUE,
-                     colClasses = rep("integer", 2))
+sl.raw <- read.xlsx(am.file, sheetName = "Sheet1", header = TRUE)
 ```
 
 ### Plot data
@@ -54,6 +51,26 @@ list.plot <- list(
   Miseraable = sl.raw$leniency[sl.raw$smile == 3],
   Neutral = sl.raw$leniency[sl.raw$smile == 4])
 boxplot(list.plot, main = "Smiles and Leniency, Type 7")
+```
 
+### Null hypothesis
+
+### Test
+
+```{r compute}
+fs.size <- nrow(sl.raw)
+fs.group.size <- sum(sl.raw$smile == 1)
+
+fs.mean <- mean(sl.raw$leniency[sl.raw$smile == 1])
+fs.var <- var(sl.raw$leniency[sl.raw$smile == 1])
+fl.mean <- mean(sl.raw$leniency[sl.raw$smile == 2])
+fl.var <- var(sl.raw$leniency[sl.raw$smile == 2])
+m.mean <- mean(sl.raw$leniency[sl.raw$smile == 3])
+m.var <- var(sl.raw$leniency[sl.raw$smile == 3])
+n.mean <- mean(sl.raw$leniency[sl.raw$smile == 4])
+n.var <- var(sl.raw$leniency[sl.raw$smile == 4])
+
+MSE <- mean(c(fs.var, fl.var, m.var, n.var))
+MSB <- fs.group.size * var(c(fs.mean, fl.mean, m.mean, n.mean))
 ```
 
