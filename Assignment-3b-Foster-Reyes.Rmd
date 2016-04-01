@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 3b"
 author: "Hope Foster-Reyes"
 date: "March 10, 2016"
-output: pdf_document
+output: html_document
 header-includes: \usepackage{amsmath}
 ---
 
