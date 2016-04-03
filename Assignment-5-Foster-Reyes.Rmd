@@ -39,13 +39,66 @@ MSE and MSB measure the same quantity, the population variance, when the populat
 
 ## Chapter 15, Q11.
 
+The value of F in Fisher's F distribution measures the ratio of MSB to MSE. The probability density of the F distribution approaches zero as the ratio of MSB to MSE increases, and its shape is depends on the degrees of freedom of the numerator (MSB) and the denominator (MSE).
+
 ## Chapter 15, Q13.
+
+The mean square total could be computed by dividing the sum of squares by the degrees of freedom. 
 
 ## Chapter 15, Q15.
 
+### a.
+
+Interaction
+
+### b.
+
+Main effect
+
+### c.
+
+Simple effect
+
+### d.
+
+Specific comparison
+
+### e.
+
+Simple effect
+
 ## Chapter 15, Q17.
 
-## Chapter 14, Q18.
+### Null hypothesis
+
+### Test
+
+```{r compute}
+fs.size <- nrow(sl.raw)
+fs.group.size <- sum(sl.raw$smile == 1)
+
+fs.mean <- mean(sl.raw$leniency[sl.raw$smile == 1])
+fs.var <- var(sl.raw$leniency[sl.raw$smile == 1])
+fl.mean <- mean(sl.raw$leniency[sl.raw$smile == 2])
+fl.var <- var(sl.raw$leniency[sl.raw$smile == 2])
+m.mean <- mean(sl.raw$leniency[sl.raw$smile == 3])
+m.var <- var(sl.raw$leniency[sl.raw$smile == 3])
+n.mean <- mean(sl.raw$leniency[sl.raw$smile == 4])
+n.var <- var(sl.raw$leniency[sl.raw$smile == 4])
+
+MSE <- mean(c(fs.var, fl.var, m.var, n.var))
+MSB <- fs.group.size * var(c(fs.mean, fl.mean, m.mean, n.mean))
+```
+
+## Chapter 15, Q19.
+
+There is an interaction when simple effects differ.
+
+## Chapter 15, Q21.
+
+## Chapter 15, Q23.
+
+Within-subjetcs designs are typically more powerful than between-subjects design because the natural variations among subjects are controlled. By testing the same individuals in different conditions, we reduce the individual differences that would lead to increased variations in the variable that we are attempting to study.
 
 ### Prepare Environment
 
