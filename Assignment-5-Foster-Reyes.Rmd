@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 5"
 author: "Hope Foster-Reyes"
 date: "April 2, 2016"
-output: pdf_document
+output: html_document
 header-includes: \usepackage{amsmath}
 ---
 
@@ -69,25 +69,48 @@ Simple effect
 
 ## Chapter 15, Q17.
 
+### Summarize data
+
+```{r 15-q7}
+# load data from exercise
+rc.data <- data.frame(time=rep(30, 5), 
+                      age=rep(12, 5), 
+                      rc=c(66, 68, 59, 72, 46))
+rc.data <- rbind(rc.data, data.frame(time=rep(30, 5), 
+                                     age=rep(16, 5), 
+                                     rc=c(74, 71, 67, 82, 76)))
+rc.data <- rbind(rc.data, data.frame(time=rep(60, 5), 
+                                     age=rep(12, 5), 
+                                     rc=c(69, 61, 69, 73, 61)))
+rc.data <- rbind(rc.data, data.frame(time=rep(60, 5), 
+                                     age=rep(16, 5), 
+                                     rc=c(69, 61, 69, 73, 61)))
+
+boxplot(rc~time, data = rc.data, main="Reading Comprehension by Time")
+boxplot(rc~age, data = rc.data, main="Reading Comprehension by Age")
+
+rc.groupmean <- aggregate(list(mean=rc.data$rc), by = list(time = rc.data$time, age = rc.data$age), FUN=mean)
+rc.groupmean
+
+rc.groupvar <- aggregate(list(var=rc.data$rc), by = list(time = rc.data$time, age = rc.data$age), FUN=var)
+rc.groupvar
+
+```
+
+
+
 ### Null hypothesis
+
+
 
 ### Test
 
 ```{r compute}
-fs.size <- nrow(sl.raw)
-fs.group.size <- sum(sl.raw$smile == 1)
+rc.size <- nrow(rc.data)
+rc.group.size <- nrow(rc.groupmean)
 
-fs.mean <- mean(sl.raw$leniency[sl.raw$smile == 1])
-fs.var <- var(sl.raw$leniency[sl.raw$smile == 1])
-fl.mean <- mean(sl.raw$leniency[sl.raw$smile == 2])
-fl.var <- var(sl.raw$leniency[sl.raw$smile == 2])
-m.mean <- mean(sl.raw$leniency[sl.raw$smile == 3])
-m.var <- var(sl.raw$leniency[sl.raw$smile == 3])
-n.mean <- mean(sl.raw$leniency[sl.raw$smile == 4])
-n.var <- var(sl.raw$leniency[sl.raw$smile == 4])
-
-MSE <- mean(c(fs.var, fl.var, m.var, n.var))
-MSB <- fs.group.size * var(c(fs.mean, fl.mean, m.mean, n.mean))
+MSE <- mean(rc.groupvar)
+MSB <- rc.group.size * var(rc.groupmean)
 ```
 
 ## Chapter 15, Q19.
