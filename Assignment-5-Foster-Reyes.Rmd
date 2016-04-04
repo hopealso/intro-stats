@@ -84,7 +84,7 @@ rc.data <- rbind(rc.data, data.frame(time=rep(60, 5),
                                      rc=c(69, 61, 69, 73, 61)))
 rc.data <- rbind(rc.data, data.frame(time=rep(60, 5), 
                                      age=rep(16, 5), 
-                                     rc=c(69, 61, 69, 73, 61)))
+                                     rc=c(95, 92, 95, 98, 94)))
 
 boxplot(rc~time, data = rc.data, main="Reading Comprehension by Time")
 boxplot(rc~age, data = rc.data, main="Reading Comprehension by Age")
@@ -105,12 +105,24 @@ rc.groupvar
 
 ### Test
 
-```{r compute}
+```{r q17-compute}
 rc.size <- nrow(rc.data)
-rc.group.size <- nrow(rc.groupmean)
+rc.group.size <- rc.size / nrow(rc.groupmean)
+rc.grandmean <- mean(rc.groupmean$mean)
 
-MSE <- mean(rc.groupvar)
-MSB <- rc.group.size * var(rc.groupmean)
+#MSE <- mean(rc.groupvar)
+#MSB <- rc.group.size * var(rc.groupmean)
+
+SSTot <- sum((rc.data$rc - rc.grandmean)^2)
+SSTime <- rc.group.size * length(unique(rc.data$time)) * 
+  sum((with(rc.data, tapply(rc, rc.data$time, mean)) - rc.grandmean)^2)
+SSAge <- rc.group.size * length(unique(rc.data$age)) * 
+  sum((with(rc.data, tapply(rc, rc.data$age, mean)) - rc.grandmean)^2)
+
+sqerr <- function(age, time, mean) {
+  return(sum((rc.data$rc[rc.data$age == age & rc.data$time == time] - mean)^2))
+}
+
 ```
 
 ## Chapter 15, Q19.
@@ -118,6 +130,8 @@ MSB <- rc.group.size * var(rc.groupmean)
 There is an interaction when simple effects differ.
 
 ## Chapter 15, Q21.
+
+
 
 ## Chapter 15, Q23.
 
