@@ -2,7 +2,7 @@
 title: "Introduction to Statistical Concepts, MSCA 31000, Assignment 5"
 author: "Hope Foster-Reyes"
 date: "April 2, 2016"
-output: html_document
+output: pdf_document
 header-includes: \usepackage{amsmath}
 ---
 
@@ -97,21 +97,17 @@ rc.groupvar
 
 ```
 
-
-
-### Null hypothesis
-
-
-
-### Test
+### Analyze Variance
 
 ```{r q17-compute}
 rc.size <- nrow(rc.data)
 rc.group.size <- rc.size / nrow(rc.groupmean)
 rc.grandmean <- mean(rc.groupmean$mean)
-
-#MSE <- mean(rc.groupvar)
-#MSB <- rc.group.size * var(rc.groupmean)
+df.time <- length(unique(rc.data$time)) - 1
+df.age <- length(unique(rc.data$age)) - 1
+df.timeage <-  df.time * df.age
+df.tot <- rc.size - 1
+df.err <- df.tot - df.time - df.age - df.timeage
 
 SSTot <- sum((rc.data$rc - rc.grandmean)^2)
 SSTime <- rc.group.size * length(unique(rc.data$time)) * 
@@ -119,11 +115,40 @@ SSTime <- rc.group.size * length(unique(rc.data$time)) *
 SSAge <- rc.group.size * length(unique(rc.data$age)) * 
   sum((with(rc.data, tapply(rc, rc.data$age, mean)) - rc.grandmean)^2)
 
-sqerr <- function(age, time, mean) {
-  return(sum((rc.data$rc[rc.data$age == age & rc.data$time == time] - mean)^2))
+rc.groupsqerr <- function(x) {
+  return(sum((rc.data$rc[rc.data$time == x[1] & rc.data$age == x[2]] - x[3])^2))
 }
+SSErr <- sum(apply(rc.groupmean, 1, rc.groupsqerr))
 
+SSTimeAge <- SSTot - (SSTime + SSAge + SSErr)
+
+MSTime <- SSTime / df.time
+MSAge <- SSAge / df.age
+MSTimeAge <- SSTimeAge / (df.time * df.age)
+MSErr <- SSErr / 
+  (rc.size - 
+   length(unique(rc.data$time)) - 
+   length(unique(rc.data$age)) - 
+   ((length(unique(rc.data$time)) - 1) * (length(unique(rc.data$age)) - 1)) + 
+   1)
+
+f.age <- MSAge / MSErr
+f.time <- MSTime / MSErr
+f.timeage <- MSTimeAge / MSErr
+
+p.age <- 1 - pf(f.age, df.age, df.err)
+p.time <- 1 - pf(f.time, df.time, df.err)
+p.timeage <- 1 - pf(f.timeage, df.timeage, df.err)
 ```
+
+Source     | df             | SS            | MS            | F             | P
+---------- | -------------- | ------------- | ------------- | ------------- | ----------------------------------------
+Age        | `r df.age`     | `r SSAge`     | `r MSAge`     | `r f.age`     | `r format(p.age, scientific = FALSE)`
+Time       | `r df.time`    | `r SSTime`    | `r MSTime`    | `r f.time`    | `r format(p.time, scientific = FALSE)`
+Age x Time | `r df.timeage` | `r SSTimeAge` | `r MSTimeAge` | `r f.timeage` | `r format(p.timeage, scientific = FALSE)`
+Error      | `r df.err`     | `r SSErr`     | `r MSErr`     |               |    
+Total      | `r df.tot`     | `r SSTot`     |               |               |    
+
 
 ## Chapter 15, Q19.
 
@@ -131,201 +156,51 @@ There is an interaction when simple effects differ.
 
 ## Chapter 15, Q21.
 
+### a.
 
+A, A x B
+
+### b.
+
+A, B
 
 ## Chapter 15, Q23.
 
 Within-subjetcs designs are typically more powerful than between-subjects design because the natural variations among subjects are controlled. By testing the same individuals in different conditions, we reduce the individual differences that would lead to increased variations in the variable that we are attempting to study.
 
-### Prepare Environment
+## Chapter 19, Q3.
 
-Load libraries.
+```{r 19-q3}
+ex.mean <- 12
+ctl.mean <- 8
+q3.MSE <- 16
+q3.n <- 20
 
-```{r libraries}
-library(xlsx)
+q3.g <- (ex.mean - ctl.mean) / sqrt(q3.MSE)
+q3.d <- q3.g * sqrt(q3.n / (q3.n - 2))
 ```
 
-Download data from online Url to subdirectory local to this RStudio project.
+$\bar{x}_{ex} = 12$
 
-```{r download-data}
-if (!file.exists("data")) {
-  dir.create("data")
-}
+$\bar{x}_{ctl} = 8$
 
-# !!!This version of file via automated download fails. 
-# Remainder of code for assigment assumes manually imported version of .xlsx file located 
-# in data subdirectory of working (.rproj) directory
-am.url <- "http://onlinestatbook.com/2/case_studies/data/angry_moods.xls"
-am.file <- "./data/angry_moods.xls"
-if (!file.exists(am.file)) {
-  download.file(am.url, destfile = am.file)
-}
-```
+MSE = 16
 
-Import data.
+N = 20
 
-```{r import-data}
-am.df <- read.xlsx(am.file, 
-                   sheetName = "angry_moods.txt", 
-                   header = TRUE,
-                   colClasses = rep("integer", 7))
-```
+$g = \frac{\bar{x}_{ex} - \bar{x}_{ctl}}{\sqrt{MSE}} = \frac{12 - 8}{\sqrt{16}} = `r q3.g`$
 
-### Observe scatter plot
+$d = g \sqrt{\frac{N}{N - 2}} = `r q3.g` \sqrt{\frac{`r q3.n`}{`r q3.n` - 2}} = `r q3.d`$
 
-```{r q18-plot}
-plot(am.df$Control.Out, am.df$Anger.Out)
-```
+## Chapter 19, Q4.
 
-### Find regression line for predicting Anger.Out from Control.Out
+The experiment in which the subjects were relatively homogeneous would have the larger value of g.
 
-```{r q18}
-coao.n <- nrow(am.df)
-co.mean <- mean(am.df$Control.Out)
-ao.mean <- mean(am.df$Anger.Out)
-cor.coao <- cor(am.df$Control.Out, am.df$Anger.Out, method = "pearson")
+## Chapter 19, Q5.
 
-# calculate slope and intercept of simple linear regression  
-b.ao <- cor.coao * (sd(am.df$Anger.Out) / sd(am.df$Control.Out))
-a.ao <- ao.mean - b.ao * co.mean
-coao.predicted <- b.ao * am.df$Control.Out + a.ao
-coao.residual <- am.df$Anger.Out - coao.predicted
+$\omega^2$ is unbiased, whereas $\eta^2$ tends to overestimate the variance explained and is therefore a biased estimate of the proportion of variance explained. Therefore $\omega^2$ is is preferred.
 
-# collect data points into a data frame
-coao.regression <- data.frame(seq(1, coao.n), am.df$Control.Out, am.df$Anger.Out, 
-                              coao.predicted, coao.residual, coao.residual^2)
-colnames(coao.regression) <- c("id", "Control.Out", "Anger.Out", 
-                               "AO.Predicted", "AO.Resid", "AO.SqResid")
+## Chapter 19, Q6.
 
-# Check result using lm()
-coao.lm <- lm(Anger.Out ~ Control.Out, data = coao.regression)
-coao.coeffs <- coefficients(coao.lm)
-```
+The value of $\eta^2$ for an effect is simply the sum of squares for this effect divided by the sum of squares total. Partial $\eta^2$ is the sum of squares for an effect divided by the sum of squares for that effect plus the sum of squares error. Partial $\eta^2$ will be larger than $\eta^2$ as only a portion of the variation is included in the denominator.
 
-$\hat{y}_{AO} = bx_{CO} + a$
-
-### a.
-
-$b = r_{COAO} \frac{\sigma_{AO}}{\sigma_{CO}}$
-
-$r_{COAO} = `r cor.coao`$
-
-$b = r_{COAO} \frac{\sigma_{AO}}{\sigma_{CO}} = (`r cor.coao`)\frac{`r sd(am.df$Anger.Out)`}{`r sd(am.df$Control.Out)`} = `r b.ao`$ 
-
-### b.
-
-$a = \bar{y}_{AO} - b\bar{x}_{CO} = `r ao.mean` - (`r b.ao`)`r co.mean` = `r a.ao`$
-
-Regression line:
-
-$\hat{y}_{AO} = `r b.ao`x_{CO} + `r a.ao`$
-
-### c.
-
-Plot regression, calculated manually:
-
-```{r q18-test}
-plot(coao.regression$Control.Out, coao.regression$Anger.Out, col = "blue", main = "Manual Linear Regression")
-points(coao.regression$Control.Out, coao.regression$AO.Predicted, col = "red")
-```
-
-Plot histogram of residuals.
-
-```{r q18-resid}
-hist(coao.regression$AO.Resid)
-```
-
-The relationship appears to be approximately linear. The errors of prediction appear to be distributed normally. However, further analysis may be necessary to determine if the distribution is homoscedastic as the variance around the regression line does not appear wholly consistent.
-
-### d.
-
-#### Null hypothesis:
-
-$H_{0}: b = 0$
-
-$H_{A}: b <> 0$
-
-#### Test:
-
-```{r q18-signif}
-coao.ssx <- sum((am.df$Control.Out - co.mean)^2)
-coao.ssy <- sum((am.df$Anger.Out - ao.mean)^2)
-coao.see.r <- sqrt(((1 - cor.coao^2) * coao.ssy) / (coao.n - 2))
-coao.see <- sqrt(sum(coao.regression$AO.SqResid) / (coao.n - 2))
-coao.sd.b <- coao.see / sqrt(coao.ssx)
-
-coao.t <- b.ao / coao.sd.b
-
-coao.p <- 2 * pt(-coao.t, df = coao.n - 2, lower.tail = FALSE)
-coao.t.05 <- qt(1 - .05 / 2, df = coao.n - 2)
-```
-
-$t = \frac{statistic - \text{hypothesized value}}{\text{standard error of the statistic}}$
-
-Where $b$ is the slope of the regression line predicting Anger.Out from Control.Out, and $s_{b}$ is the standard error of $b$:
-
-$t = \frac{b - 0}{s_{b}}$
-
-Where $s_{est}$ is the standard error of the estimate, SSX is the sum of squared deviations of Control.Out ($x_{CO}$) from $\bar{x}_{CO}$ and SSY is the sum of squared deviations of Anger.Out ($x_{AO}$) from $\bar{y}_{AO}$:
-
-$s_{b} = \frac{s_{est}}{\sqrt{SSX}}$
-
-$SSX = \sum (x_{CO}-\bar{x}_{CO})^2 = `r coao.ssx`$
-
-$s_{est} = \sqrt{\frac{(1-r^2)SSY}{N - 2}}$
-
-$SSY = \sum (y_{AO}-\bar{y}_{AO})^2 = `r coao.ssy`$
-
-$s_{est} = \sqrt{\frac{(1-`r cor.coao`^2)`r coao.ssy`}{`r coao.n` - 2}} = `r coao.see`$
-
-$s_{b} = \frac{s_{est}}{\sqrt{SSX}} = \frac{`r coao.see`}{\sqrt{`r coao.ssx`}} = `r coao.sd.b`$
-
-$t = \frac{b - 0}{s_{b}} = \frac{`r b.ao`}{`r coao.sd.b`} = `r coao.t`$
-
-What is the probability of getting a t as large or larger or as small or smaller in our sampling distribution?
-
-Degrees of Freedom = `r coao.n - 2`
-
-$P(t < `r coao.t` \; or \; t > `r -coao.t`) = `r coao.p`$
-
-Alternately, what are the t critical values for a two-tailed test of alpha = 0.5 and df = `r coao.n - 2`?
-
-$`r -coao.t.05`, `r coao.t.05`$
-
-We reject the null hypothesis; the slope is significantly different from 0 within 95% confidence.
-
-### e.
-
-$s_{est} = \sqrt{\frac{(1-r^2)SSY}{N - 2}}$
-
-$SSY = \sum (y_{AO}-\bar{y}_{AO})^2 = `r coao.ssy`$
-
-$s_{est} = \sqrt{\frac{(1-`r cor.coao`^2)`r coao.ssy`}{`r coao.n` - 2}} = `r coao.see`$
-
-## Chapter 16, Q1.
-
-Log transformations can be used to make highly skewed distributions less skewed. This can be valuable both for making patterns in the data more interpretable and for helping to meet the assumptions of inferential statistics.
-
-## Chapter 16, Q2.
-
-$10^3 = 1000$
-
-## Chapter 16, Q3.
-
-$9^{\lambda} = 9^.5 = `r sqrt(9)`$
-
-$16^{\lambda} = 16^.5 = `r sqrt(16)`$
-
-$25^{\lambda} = 25^.5 = `r sqrt(25)`$
-
-Transformed data using $\lambda$ = .5: (3, 4, 5)
-
-## Chapter 16, Q4.
-
-$\lambda$ = 0 in Tukey's ladder decreases skew the most.
-
-## Chapter 16, Q5.
-
-For positively skewed data, higher values of $\lambda$ increase skew the most, the value of *2* in Tukey's ladder being the highest.
-
-For negatively skewed data, lower values of $\lambda$ increase skew the most, the value of *-2* in Tukey's ladder being the lowest.
