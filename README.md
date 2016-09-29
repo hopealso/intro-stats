@@ -1,2 +1,2 @@
-# intro-stats-angry-moods
+# intro-stats
 UChicago Analytics Intro to Stats
